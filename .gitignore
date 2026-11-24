@@ -1,0 +1,46 @@
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+dist-ssr/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# .NET & Backend build artifacts
+bin/
+obj/
+backend/**/bin/
+backend/**/obj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+_ReSharper*/
+
+# SQLite Databases & local state
+*.db
+*.db-shm
+*.db-wal
+backend/luminabeauty.db
+backend/luminabeauty.db-shm
+backend/luminabeauty.db-wal
+
+# Local environment & temporary folders
+.appdata/
+.dotnet/
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
