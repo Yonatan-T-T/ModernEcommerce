@@ -181,6 +181,13 @@ public class ProductService : IProductService
 
     public async Task<Result<ProductDto>> CreateProductAsync(CreateProductRequest request)
     {
+        var normalizedSku = request.Sku.Trim().ToUpperInvariant();
+        if (string.IsNullOrWhiteSpace(normalizedSku))
+            return Result<ProductDto>.Failure("SKU is required.");
+
+        if (await _context.Products.AnyAsync(p => p.Sku == normalizedSku))
+            return Result<ProductDto>.Failure($"A product with SKU '{normalizedSku}' already exists. Please use a unique SKU.");
+
         var slug = GenerateSlug(request.Name);
         if (await _context.Products.AnyAsync(p => p.Slug == slug))
         {
@@ -261,10 +268,17 @@ public class ProductService : IProductService
         if (product == null)
             return Result<ProductDto>.Failure("Product not found.");
 
+        var normalizedSku = request.Sku.Trim().ToUpperInvariant();
+        if (string.IsNullOrWhiteSpace(normalizedSku))
+            return Result<ProductDto>.Failure("SKU is required.");
+
+        if (await _context.Products.AnyAsync(p => p.Sku == normalizedSku && p.Id != request.Id))
+            return Result<ProductDto>.Failure($"Another product with SKU '{normalizedSku}' already exists. Please use a unique SKU.");
+
         product.Name = request.Name.Trim();
         product.ShortDescription = request.ShortDescription;
         product.Description = request.Description;
-        product.Sku = request.Sku.Trim().ToUpperInvariant();
+        product.Sku = normalizedSku;
         product.Price = request.Price;
         product.CostPrice = request.CostPrice;
         product.CompareAtPrice = request.CompareAtPrice;

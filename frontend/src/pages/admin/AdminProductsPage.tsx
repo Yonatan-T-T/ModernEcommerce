@@ -73,6 +73,13 @@ export const AdminProductsPage: React.FC = () => {
   };
 
   const [formData, setFormData] = useState(initialForm);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const getApiErrorMessage = (err: any) =>
+    err?.response?.data?.message ||
+    err?.response?.data?.errors?.[0] ||
+    err?.message ||
+    'Failed to save formulation. Please try again.';
 
   // Queries
   const { data: categories = [] } = useQuery({
@@ -100,6 +107,9 @@ export const AdminProductsPage: React.FC = () => {
       setIsModalOpen(false);
       resetForm();
     },
+    onError: (err: any) => {
+      setFormError(getApiErrorMessage(err));
+    },
   });
 
   const updateMutation = useMutation({
@@ -108,6 +118,9 @@ export const AdminProductsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
       setIsModalOpen(false);
       resetForm();
+    },
+    onError: (err: any) => {
+      setFormError(getApiErrorMessage(err));
     },
   });
 
@@ -129,6 +142,7 @@ export const AdminProductsPage: React.FC = () => {
     setFormData(initialForm);
     setEditingProduct(null);
     setIsPreviewMode(false);
+    setFormError(null);
   };
 
   const openCreateModal = () => {
@@ -137,6 +151,7 @@ export const AdminProductsPage: React.FC = () => {
   };
 
   const openEditModal = (p: Product) => {
+    setFormError(null);
     setEditingProduct(p);
     setFormData({
       name: p.name,
@@ -174,6 +189,7 @@ export const AdminProductsPage: React.FC = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     if (editingProduct) {
       updateMutation.mutate({ id: editingProduct.id, data: { ...formData, id: editingProduct.id } });
     } else {
@@ -541,6 +557,12 @@ export const AdminProductsPage: React.FC = () => {
               </div>
             ) : (
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
+              {formError && (
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-700 dark:text-red-300 text-xs">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>{formError}</span>
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Formulation Name *
@@ -563,7 +585,10 @@ export const AdminProductsPage: React.FC = () => {
                   <input
                     type="text"
                     value={formData.sku}
-                    onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, sku: e.target.value });
+                      if (formError) setFormError(null);
+                    }}
                     required
                     placeholder="LB-SKIN-001"
                     className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#1C1C22] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl uppercase font-mono"
