@@ -7,6 +7,12 @@ public interface IJwtTokenService
     string GenerateToken(User user);
 }
 
+public interface ITokenRevocationService
+{
+    void RevokeToken(string jti, DateTime expiresAtUtc);
+    bool IsTokenRevoked(string jti);
+}
+
 public interface IPasswordHasher
 {
     string HashPassword(string password);

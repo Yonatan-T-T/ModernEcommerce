@@ -22,12 +22,14 @@ public static class DependencyInjection
             provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddHttpContextAccessor();
+        services.AddMemoryCache();
 
         // Infrastructure Services
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
+        services.AddSingleton<ITokenRevocationService, TokenRevocationService>();
 
         // Application Services
         services.AddScoped<IAuthService, AuthService>();

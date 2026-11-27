@@ -7,11 +7,24 @@ import { themeSlice, configSlice, languageSlice } from './slices/themeAndConfigS
 import { syncUserCartApi, toggleWishlistApi } from '@/api/queries';
 
 const userSyncMiddleware: Middleware = (storeApi) => (next) => (action: any) => {
+  // Capture token before auth/logout clears localStorage
+  const tokenBeforeAction =
+    action.type === 'auth/logout' ? storeApi.getState().auth.token : null;
+
   const result = next(action);
   const state = storeApi.getState();
 
-  // Clear local cart & wishlist on logout so another user never sees the previous user's items
+  // Revoke JWT server-side (using fetch so api request interceptor doesn't strip the cleared token)
+  // and clear local cart & wishlist on logout
   if (action.type === 'auth/logout') {
+    if (tokenBeforeAction) {
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenBeforeAction}`,
+        },
+      }).catch(() => {});
+    }
     storeApi.dispatch(setCartItems([]));
     storeApi.dispatch(setWishlist([]));
     localStorage.removeItem('lumina_cart');

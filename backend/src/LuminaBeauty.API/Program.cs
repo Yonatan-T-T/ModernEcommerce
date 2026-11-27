@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -88,6 +89,23 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = context =>
+        {
+            var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+            if (!string.IsNullOrEmpty(jti))
+            {
+                var revocation = context.HttpContext.RequestServices.GetRequiredService<ITokenRevocationService>();
+                if (revocation.IsTokenRevoked(jti))
+                {
+                    context.Fail("Token has been revoked.");
+                }
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
