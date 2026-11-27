@@ -14,6 +14,10 @@ import {
   Lock,
   ArrowLeft,
   Sparkles,
+  Smartphone,
+  Landmark,
+  Wallet,
+  Banknote,
 } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
@@ -34,16 +38,15 @@ export const CheckoutPage: React.FC = () => {
     customerName: user?.fullName || '',
     customerEmail: user?.email || '',
     customerPhone: user?.phoneNumber || '',
-    streetAddress: '742 Evergreen Terrace',
-    apartment: 'Suite 4B',
-    city: 'Beverly Hills',
-    state: 'CA',
-    postalCode: '90210',
-    country: 'United States',
-    paymentMethod: 'CreditCard',
-    cardNumber: '•••• •••• •••• 4242',
-    cardExp: '12/28',
-    cardCvc: '888',
+    streetAddress: 'Cameroon Street, Bole Medhanialem',
+    apartment: 'Floor 3, Suite 302',
+    city: 'Addis Ababa',
+    state: 'Bole Sub-City',
+    postalCode: '1000',
+    country: 'Ethiopia',
+    paymentMethod: 'Telebirr',
+    walletPhone: user?.phoneNumber || '+251 91 123 4567',
+    chapaChannel: 'telebirr',
     notes: '',
   });
 
@@ -186,7 +189,7 @@ export const CheckoutPage: React.FC = () => {
                     value={formData.customerPhone}
                     onChange={handleInputChange}
                     required
-                    placeholder="+1 (555) 438-9210"
+                    placeholder="+251 91 123 4567"
                     className="w-full px-3.5 py-2.5 text-xs bg-lumina-50 dark:bg-charcoal-900 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-roseGold"
                   />
                 </div>
@@ -278,65 +281,226 @@ export const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. Payment Method */}
-            <div className="bg-white dark:bg-charcoal-800/60 rounded-3xl p-6 sm:p-8 border border-lumina-200 dark:border-charcoal-700 shadow-xs space-y-4">
-              <div className="border-b border-lumina-100 dark:border-charcoal-700 pb-3">
+            {/* 3. Payment Method — Ethiopian Payment Gateways */}
+            <div className="bg-white dark:bg-charcoal-800/60 rounded-3xl p-6 sm:p-8 border border-lumina-200 dark:border-charcoal-700 shadow-xs space-y-5">
+              <div className="border-b border-lumina-100 dark:border-charcoal-700 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs flex items-center justify-center font-bold">3</span>
                   {t('checkout.payment')}
                 </h3>
+                <span className="text-[11px] text-charcoal-500 dark:text-lumina-400">
+                  {t('checkout.gatewaySubtitle')}
+                </span>
               </div>
 
-              {/* Payment Selectors */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {['CreditCard', 'ApplePay', 'PayPal', 'CashOnDelivery'].map((method) => (
-                  <button
-                    key={method}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, paymentMethod: method })}
-                    className={`py-3 px-3 rounded-xl border text-xs font-semibold flex flex-col items-center justify-center gap-1.5 transition-all ${
-                      formData.paymentMethod === method
-                        ? 'border-roseGold bg-roseGold/10 text-roseGold shadow-xs ring-1 ring-roseGold'
-                        : 'border-lumina-200 dark:border-charcoal-700 hover:bg-lumina-50 dark:hover:bg-charcoal-800 text-charcoal-700 dark:text-lumina-200'
-                    }`}
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>{method === 'CreditCard' ? 'Credit Card' : method}</span>
-                  </button>
-                ))}
+              {/* Ethiopian Gateway Selectors */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                {[
+                  {
+                    id: 'Telebirr',
+                    label: t('checkout.telebirr'),
+                    sub: 'Ethio Telecom',
+                    icon: Smartphone,
+                    accent: 'text-[#0095DA]',
+                  },
+                  {
+                    id: 'CBEBirr',
+                    label: t('checkout.cbeBirr'),
+                    sub: 'Commercial Bank',
+                    icon: Landmark,
+                    accent: 'text-[#7C2182] dark:text-[#C46FD0]',
+                  },
+                  {
+                    id: 'Chapa',
+                    label: t('checkout.chapa'),
+                    sub: 'All ET Banks & Cards',
+                    icon: ShieldCheck,
+                    accent: 'text-emerald-600 dark:text-emerald-400',
+                  },
+                  {
+                    id: 'Amole',
+                    label: t('checkout.amole'),
+                    sub: 'Dashen Bank',
+                    icon: Wallet,
+                    accent: 'text-amber-600 dark:text-amber-400',
+                  },
+                  {
+                    id: 'CashOnDelivery',
+                    label: t('checkout.cod'),
+                    sub: 'Addis Delivery',
+                    icon: Banknote,
+                    accent: 'text-roseGold',
+                  },
+                ].map((gw) => {
+                  const Icon = gw.icon;
+                  const isSelected = formData.paymentMethod === gw.id;
+                  return (
+                    <button
+                      key={gw.id}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, paymentMethod: gw.id })}
+                      className={`py-3 px-2.5 rounded-2xl border text-xs font-semibold flex flex-col items-center justify-center gap-1 transition-all text-center ${
+                        isSelected
+                          ? 'border-roseGold bg-roseGold/10 text-charcoal-900 dark:text-white shadow-xs ring-1 ring-roseGold'
+                          : 'border-lumina-200 dark:border-charcoal-700 hover:bg-lumina-50 dark:hover:bg-charcoal-800 text-charcoal-700 dark:text-lumina-200'
+                      }`}
+                    >
+                      <Icon className={`w-5 h-5 ${gw.accent}`} />
+                      <span className="leading-tight mt-0.5">{gw.label}</span>
+                      <span className="text-[9px] font-normal text-charcoal-400 dark:text-lumina-400">
+                        {gw.sub}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
 
-              {formData.paymentMethod === 'CreditCard' && (
-                <div className="pt-3 space-y-3 p-4 bg-lumina-50 dark:bg-charcoal-900/60 rounded-2xl border border-lumina-200/80 dark:border-charcoal-700">
-                  <div className="flex items-center justify-between text-xs text-charcoal-600 dark:text-lumina-300">
-                    <span className="font-medium">Card Information (Simulated Sandbox)</span>
-                    <span className="text-[10px] text-emerald-600 font-bold uppercase">Test Mode Enabled</span>
+              {/* Gateway Details Panel */}
+              {formData.paymentMethod === 'Telebirr' && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#0095DA]/[0.06] dark:bg-[#0095DA]/10 border border-[#0095DA]/25 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#0095DA] text-white text-[10px] font-bold tracking-wider uppercase">
+                        telebirr
+                      </span>
+                      <span className="text-xs font-semibold text-charcoal-900 dark:text-white">
+                        SuperApp & USSD (*127#)
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-[#0095DA]">{formatPrice(finalTotal)}</span>
                   </div>
                   <div>
+                    <label className="block text-[11px] font-medium text-charcoal-700 dark:text-lumina-300 mb-1">
+                      {t('checkout.walletPhone')}
+                    </label>
                     <input
-                      type="text"
-                      name="cardNumber"
-                      value={formData.cardNumber}
+                      type="tel"
+                      name="walletPhone"
+                      value={formData.walletPhone}
                       onChange={handleInputChange}
-                      className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-roseGold"
+                      required
+                      placeholder="+251 91 123 4567"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-900 border border-[#0095DA]/30 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-[#0095DA] font-mono"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">
+                    A Telebirr PIN prompt will be pushed to your phone upon clicking Complete Order.
+                  </p>
+                </div>
+              )}
+
+              {formData.paymentMethod === 'CBEBirr' && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-[#7C2182]/[0.06] dark:bg-[#7C2182]/15 border border-[#7C2182]/25 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#7C2182] text-white text-[10px] font-bold tracking-wider uppercase">
+                        CBE Birr
+                      </span>
+                      <span className="text-xs font-semibold text-charcoal-900 dark:text-white">
+                        Commercial Bank of Ethiopia (*847#)
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-[#7C2182] dark:text-[#D58AE0]">{formatPrice(finalTotal)}</span>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-charcoal-700 dark:text-lumina-300 mb-1">
+                      {t('checkout.walletPhone')}
+                    </label>
                     <input
-                      type="text"
-                      name="cardExp"
-                      value={formData.cardExp}
+                      type="tel"
+                      name="walletPhone"
+                      value={formData.walletPhone}
                       onChange={handleInputChange}
-                      className="px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-roseGold"
-                    />
-                    <input
-                      type="text"
-                      name="cardCvc"
-                      value={formData.cardCvc}
-                      onChange={handleInputChange}
-                      className="px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-roseGold"
+                      required
+                      placeholder="+251 91 123 4567"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-900 border border-[#7C2182]/30 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-[#7C2182] font-mono"
                     />
                   </div>
+                  <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">
+                    Instant merchant verification via CBE Birr Mobile App or *847#.
+                  </p>
+                </div>
+              )}
+
+              {formData.paymentMethod === 'Chapa' && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/[0.06] dark:bg-emerald-500/10 border border-emerald-500/25 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold tracking-wider uppercase">
+                        Chapa
+                      </span>
+                      <span className="text-xs font-semibold text-charcoal-900 dark:text-white">
+                        Ethiopian Unified Checkout
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{formatPrice(finalTotal)}</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: 'telebirr', name: 'Telebirr' },
+                      { id: 'cbebirr', name: 'CBE Birr' },
+                      { id: 'awash', name: 'AwashBirr' },
+                      { id: 'abyssinia', name: 'Bank of Abyssinia' },
+                      { id: 'mpesa', name: 'M-Pesa ET' },
+                    ].map((ch) => (
+                      <button
+                        key={ch.id}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, chapaChannel: ch.id })}
+                        className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors ${
+                          formData.chapaChannel === ch.id
+                            ? 'bg-emerald-600 text-white border-emerald-600'
+                            : 'bg-white dark:bg-charcoal-900 text-charcoal-700 dark:text-lumina-300 border-emerald-500/25'
+                        }`}
+                      >
+                        {ch.name}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">
+                    Pay securely in ETB via Chapa with Telebirr, CBE, Awash, Abyssinia, M-Pesa, or local cards.
+                  </p>
+                </div>
+              )}
+
+              {formData.paymentMethod === 'Amole' && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/[0.06] dark:bg-amber-500/10 border border-amber-500/25 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-600 text-white text-[10px] font-bold tracking-wider uppercase">
+                        Amole
+                      </span>
+                      <span className="text-xs font-semibold text-charcoal-900 dark:text-white">
+                        Dashen Bank Digital Wallet
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{formatPrice(finalTotal)}</span>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-charcoal-700 dark:text-lumina-300 mb-1">
+                      {t('checkout.walletPhone')}
+                    </label>
+                    <input
+                      type="tel"
+                      name="walletPhone"
+                      value={formData.walletPhone}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="+251 91 123 4567"
+                      className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-900 border border-amber-500/30 text-charcoal-900 dark:text-white rounded-xl focus:outline-none focus:border-amber-500 font-mono"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {formData.paymentMethod === 'CashOnDelivery' && (
+                <div className="p-4 rounded-2xl bg-lumina-50 dark:bg-charcoal-900/60 border border-lumina-200 dark:border-charcoal-700 text-xs text-charcoal-600 dark:text-lumina-300 space-y-1">
+                  <p className="font-semibold text-charcoal-900 dark:text-white">
+                    Pay in Cash or Mobile Transfer on Delivery ({formatPrice(finalTotal)})
+                  </p>
+                  <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">
+                    Available for same-day courier delivery across Addis Ababa (Bole, Kazanchis, Old Airport, CMC, Piassa).
+                  </p>
                 </div>
               )}
             </div>
