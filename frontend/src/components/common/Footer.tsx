@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
+import { showToast } from '@/store/slices/toastSlice';
 import { ShieldCheck, Truck, Sparkles, HeartHandshake, Instagram, Facebook, Twitter } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const dispatch = useDispatch();
   const { config } = useSelector((state: RootState) => state.config);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    dispatch(
+      showToast({
+        message: 'Welcome to Lumina Society! Use code LUMINA15 for 15% off.',
+        type: 'success',
+      })
+    );
+    setNewsletterEmail('');
+  };
 
   return (
-    <footer className="bg-lumina-100 dark:bg-charcoal-950 border-t border-lumina-200 dark:border-charcoal-800 transition-colors">
+    <footer className="bg-lumina-100 dark:bg-charcoal-950 border-t border-lumina-200 dark:border-white/10 transition-colors pb-20 md:pb-0">
       {/* Brand Pillars */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-b border-lumina-200/60 dark:border-charcoal-800">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -116,16 +131,18 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-charcoal-600 dark:text-lumina-300 mb-3">
               Receive private invitations, seasonal formulations, and 15% off your inaugural ritual.
             </p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Welcome to the Lumina Society! Use promo code LUMINA15 at checkout.'); }} className="space-y-2">
+            <form onSubmit={handleSubscribe} className="space-y-2">
               <input
                 type="email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email address"
                 required
-                className="w-full px-3 py-2 text-xs bg-white dark:bg-charcoal-900 border border-lumina-300 dark:border-charcoal-700 rounded-lg focus:outline-none focus:border-roseGold"
+                className="w-full px-3.5 py-2.5 text-xs bg-white dark:bg-charcoal-900 border border-lumina-300 dark:border-white/10 text-charcoal-900 dark:text-white placeholder:text-charcoal-400 rounded-xl focus:outline-none focus:border-roseGold"
               />
               <button
                 type="submit"
-                className="w-full py-2 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 text-xs font-semibold rounded-lg hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-colors"
+                className="w-full py-2.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 text-xs font-semibold rounded-xl hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-colors"
               >
                 Join Private List
               </button>

@@ -18,6 +18,7 @@ public interface IApplicationDbContext
     DbSet<Review> Reviews { get; }
     DbSet<Coupon> Coupons { get; }
     DbSet<WishlistItem> WishlistItems { get; }
+    DbSet<CartItem> CartItems { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

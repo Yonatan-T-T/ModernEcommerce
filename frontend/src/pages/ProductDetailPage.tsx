@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toggleWishlist } from '@/store/slices/wishlistSlice';
+import { showToast } from '@/store/slices/toastSlice';
 import { fetchProductBySlug, fetchReviews, submitReview, fetchFeaturedProducts } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
 import { formatPrice } from '@/utils/cn';
@@ -144,6 +145,7 @@ export const ProductDetailPage: React.FC = () => {
       })
     );
 
+    dispatch(showToast({ message: `Added ${product.name} to your bag` }));
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 2000);
   };
@@ -607,7 +609,7 @@ export const ProductDetailPage: React.FC = () => {
       </section>
 
       {/* Related Products: Complete the Ritual */}
-      <section className="border-t border-lumina-200 dark:border-charcoal-800 pt-16">
+      <section className="border-t border-lumina-200 dark:border-charcoal-800 pt-16 pb-16 md:pb-0">
         <div className="text-center space-y-2 mb-10">
           <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
             Synergistic Formulations
@@ -617,12 +619,43 @@ export const ProductDetailPage: React.FC = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
           {relatedProducts.slice(0, 4).map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
       </section>
+
+      {/* Sticky Mobile Add-to-Bag Bar */}
+      <div className="md:hidden fixed bottom-16 inset-x-0 z-30 bg-white/95 dark:bg-charcoal-900/95 backdrop-blur-xl border-t border-lumina-200/80 dark:border-white/10 px-4 py-2.5 flex items-center justify-between gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-charcoal-900 dark:text-white truncate">{product.name}</p>
+          <p className="text-xs font-bold text-roseGold">{formatPrice(currentPrice * quantity)}</p>
+        </div>
+        <button
+          onClick={handleAddToCart}
+          disabled={currentStock === 0}
+          className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider shrink-0 flex items-center gap-1.5 shadow-md transition-all ${
+            justAdded
+              ? 'bg-emerald-600 text-white'
+              : 'bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900'
+          } disabled:opacity-40`}
+        >
+          {justAdded ? (
+            <>
+              <Check className="w-3.5 h-3.5" />
+              <span>Added</span>
+            </>
+          ) : currentStock === 0 ? (
+            <span>Sold Out</span>
+          ) : (
+            <>
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>Add to Bag</span>
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };

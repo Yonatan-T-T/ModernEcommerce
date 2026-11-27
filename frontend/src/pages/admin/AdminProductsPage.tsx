@@ -22,6 +22,10 @@ import {
   AlertCircle,
   Eye,
   Filter,
+  ShoppingBag,
+  Star,
+  Heart,
+  ArrowLeft,
 } from 'lucide-react';
 
 export const AdminProductsPage: React.FC = () => {
@@ -30,6 +34,7 @@ export const AdminProductsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Form State
@@ -123,6 +128,7 @@ export const AdminProductsPage: React.FC = () => {
   const resetForm = () => {
     setFormData(initialForm);
     setEditingProduct(null);
+    setIsPreviewMode(false);
   };
 
   const openCreateModal = () => {
@@ -325,19 +331,215 @@ export const AdminProductsPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
 
-          <div className="relative w-full max-w-2xl bg-white dark:bg-[#16161C] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 space-y-6">
-            <div className="flex justify-between items-center border-b border-slate-100 dark:border-white/10 pb-4">
-              <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
-                {editingProduct ? 'Edit Formulation' : 'Create New Formulation'}
-              </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
+          <div className="relative w-full max-w-3xl bg-white dark:bg-[#16161C] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 space-y-6">
+            <div className="flex justify-between items-center border-b border-slate-100 dark:border-white/10 pb-4 gap-3">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
+                  {isPreviewMode
+                    ? 'Customer Storefront Preview'
+                    : editingProduct
+                    ? 'Edit Formulation'
+                    : 'Create New Formulation'}
+                </h3>
+                {isPreviewMode && (
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Live preview of how this product will appear to shoppers.
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsPreviewMode(!isPreviewMode)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-colors ${
+                    isPreviewMode
+                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-transparent'
+                      : 'bg-roseGold/10 text-roseGold border-roseGold/30 hover:bg-roseGold hover:text-white'
+                  }`}
+                >
+                  {isPreviewMode ? (
+                    <>
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                      <span>Back to Editor</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Preview</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1.5 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
+            {isPreviewMode ? (
+              <div className="space-y-6">
+                {(() => {
+                  const previewImage =
+                    formData.imageUrls[0] ||
+                    'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800';
+                  const previewCategory =
+                    categories.find((c) => c.id === formData.categoryId)?.name || 'Skincare';
+                  const previewBrand =
+                    brands.find((b) => b.id === formData.brandId)?.name || 'Lumina Atelier';
+                  const previewTitle = formData.name || 'Untitled Formulation';
+                  const previewShort =
+                    formData.shortDescription || 'Short description will appear here.';
+                  const previewPrice = Number(formData.price) || 0;
+                  const previewCompare = Number(formData.compareAtPrice) || 0;
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                      {/* Card Preview (5 cols) */}
+                      <div className="md:col-span-5 space-y-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          Catalog Card View
+                        </span>
+                        <div className="relative flex flex-col bg-lumina-50 dark:bg-charcoal-800/80 rounded-2xl border border-lumina-200/70 dark:border-white/10 overflow-hidden shadow-md">
+                          <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+                            {formData.isBestSeller && (
+                              <span className="px-2.5 py-0.5 bg-roseGold text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
+                                Bestseller
+                              </span>
+                            )}
+                            {previewCompare > previewPrice && previewPrice > 0 && (
+                              <span className="px-2.5 py-0.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 text-[10px] font-semibold uppercase tracking-wider rounded-full">
+                                Save {Math.round(((previewCompare - previewPrice) / previewCompare) * 100)}%
+                              </span>
+                            )}
+                          </div>
+                          <div className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/85 dark:bg-charcoal-900/80 text-charcoal-600 dark:text-lumina-300">
+                            <Heart className="w-4 h-4" />
+                          </div>
+                          <div className="aspect-[4/5] bg-lumina-100 dark:bg-charcoal-900 overflow-hidden">
+                            <img
+                              src={previewImage}
+                              alt={previewTitle}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="p-4 space-y-2">
+                            <div className="flex justify-between text-[11px]">
+                              <span className="font-semibold uppercase tracking-wider text-roseGold">
+                                {previewBrand}
+                              </span>
+                              <span className="text-slate-400">{previewCategory}</span>
+                            </div>
+                            <h4 className="font-serif text-sm font-semibold text-slate-900 dark:text-white line-clamp-1">
+                              {previewTitle}
+                            </h4>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                              {previewShort}
+                            </p>
+                            <div className="pt-2 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between">
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                  {formatPrice(previewPrice)}
+                                </span>
+                                {previewCompare > previewPrice && (
+                                  <span className="text-xs text-slate-400 line-through">
+                                    {formatPrice(previewCompare)}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="flex items-center gap-1 text-xs text-amber-500 font-semibold">
+                                <Star className="w-3.5 h-3.5 fill-current" /> 5.0
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Detail Preview (7 cols) */}
+                      <div className="md:col-span-7 space-y-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                          Product Detail Page View
+                        </span>
+                        <div className="p-5 rounded-2xl bg-lumina-50 dark:bg-charcoal-900 border border-lumina-200/70 dark:border-white/10 space-y-4">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-bold uppercase tracking-widest text-roseGold">
+                              {previewBrand}
+                            </span>
+                            <span className="font-mono text-slate-400">
+                              SKU: {formData.sku || 'LB-NEW-001'}
+                            </span>
+                          </div>
+                          <h2 className="font-serif text-2xl font-semibold text-slate-900 dark:text-white leading-snug">
+                            {previewTitle}
+                          </h2>
+                          <div className="flex items-baseline gap-3">
+                            <span className="font-serif text-2xl font-bold text-slate-900 dark:text-white">
+                              {formatPrice(previewPrice)}
+                            </span>
+                            {previewCompare > previewPrice && (
+                              <span className="text-sm text-slate-400 line-through">
+                                {formatPrice(previewCompare)}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            {previewShort}
+                          </p>
+                          <div className="text-xs">
+                            {formData.stockQuantity > 0 ? (
+                              <span className="inline-flex items-center text-emerald-600 dark:text-emerald-400 font-medium">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5" />
+                                In Stock ({formData.stockQuantity} units available)
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center text-red-500 font-medium">
+                                Out of Stock
+                              </span>
+                            )}
+                          </div>
+                          <div className="pt-2 border-t border-slate-200/60 dark:border-white/10">
+                            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
+                              Description
+                            </p>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-4">
+                              {formData.description || 'Full formulation details will appear here.'}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            disabled
+                            className="w-full py-3 rounded-full bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 text-xs font-semibold uppercase tracking-widest flex items-center justify-center gap-2 opacity-90"
+                          >
+                            <ShoppingBag className="w-4 h-4" />
+                            <span>Add to Bag — {formatPrice(previewPrice)}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <div className="flex justify-end space-x-3 pt-4 border-t border-slate-100 dark:border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setIsPreviewMode(false)}
+                    className="px-4 py-2 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-xs font-medium"
+                  >
+                    Continue Editing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleFormSubmit}
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                    className="px-6 py-2 bg-roseGold text-white rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-roseGold-dark disabled:opacity-50 transition-colors shadow-sm"
+                  >
+                    {editingProduct ? 'Save Updates' : 'Create Formulation'}
+                  </button>
+                </div>
+              </div>
+            ) : (
             <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -524,6 +726,14 @@ export const AdminProductsPage: React.FC = () => {
                   Cancel
                 </button>
                 <button
+                  type="button"
+                  onClick={() => setIsPreviewMode(true)}
+                  className="px-4 py-2 border border-roseGold/40 text-roseGold rounded-xl hover:bg-roseGold/10 transition-colors flex items-center gap-1.5 font-semibold"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+                <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
                   className="px-6 py-2 bg-roseGold text-white rounded-xl font-semibold uppercase tracking-wider hover:bg-roseGold-dark disabled:opacity-50 transition-colors shadow-sm"
@@ -532,6 +742,7 @@ export const AdminProductsPage: React.FC = () => {
                 </button>
               </div>
             </form>
+            )}
           </div>
         </div>
       )}

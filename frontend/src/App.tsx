@@ -3,13 +3,23 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { setConfig } from '@/store/slices/themeAndConfigSlices';
-import { fetchStoreConfig } from '@/api/queries';
+import { setCartItems } from '@/store/slices/cartSlice';
+import { setWishlist } from '@/store/slices/wishlistSlice';
+import {
+  fetchStoreConfig,
+  fetchUserCart,
+  syncUserCartApi,
+  fetchWishlistIds,
+  toggleWishlistApi,
+} from '@/api/queries';
 
 // Common Components
 import { Navbar } from '@/components/common/Navbar';
 import { Footer } from '@/components/common/Footer';
 import { CartDrawer } from '@/components/common/CartDrawer';
 import { AuthModal } from '@/components/common/AuthModal';
+import { MobileBottomNav } from '@/components/common/MobileBottomNav';
+import { ToastContainer } from '@/components/common/ToastContainer';
 
 // Storefront Pages
 import { HomePage } from '@/pages/HomePage';
@@ -35,6 +45,7 @@ export const App: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { isDarkMode } = useSelector((state: RootState) => state.theme);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   // Synchronize dark mode class on documentElement
@@ -52,6 +63,77 @@ export const App: React.FC = () => {
       .then((cfg) => dispatch(setConfig(cfg)))
       .catch(() => {});
   }, [dispatch]);
+
+  // Sync cart & wishlist with the logged-in user's backend profile
+  useEffect(() => {
+    if (!isAuthenticated || !user?.id) return;
+
+    let cancelled = false;
+
+    const syncUserData = async () => {
+      // 1. Sync Cart (merge any guest items added before sign-in with server cart)
+      try {
+        const localRawCart = localStorage.getItem('lumina_cart');
+        const localCart = localRawCart ? JSON.parse(localRawCart) : [];
+        const serverCart = await fetchUserCart();
+
+        if (!cancelled) {
+          if (localCart.length > 0) {
+            const mergedMap = new Map<string, { productId: number; productVariantId?: number; quantity: number }>();
+            for (const item of serverCart) {
+              mergedMap.set(`${item.productId}-${item.productVariantId || 0}`, {
+                productId: item.productId,
+                productVariantId: item.productVariantId,
+                quantity: item.quantity,
+              });
+            }
+            for (const item of localCart) {
+              const key = `${item.productId}-${item.productVariantId || 0}`;
+              const existing = mergedMap.get(key);
+              if (existing) {
+                existing.quantity = Math.max(existing.quantity, item.quantity);
+              } else {
+                mergedMap.set(key, {
+                  productId: item.productId,
+                  productVariantId: item.productVariantId,
+                  quantity: item.quantity,
+                });
+              }
+            }
+            const syncedCart = await syncUserCartApi(Array.from(mergedMap.values()));
+            if (!cancelled) dispatch(setCartItems(syncedCart));
+          } else {
+            dispatch(setCartItems(serverCart));
+          }
+        }
+      } catch {
+        // Keep local cart if cart endpoint is unavailable
+      }
+
+      // 2. Sync Wishlist
+      try {
+        const localRawWishlist = localStorage.getItem('lumina_wishlist');
+        const localWishlist: number[] = localRawWishlist ? JSON.parse(localRawWishlist) : [];
+        const serverWishlist = await fetchWishlistIds();
+
+        if (!cancelled) {
+          const missingOnServer = localWishlist.filter((id) => !serverWishlist.includes(id));
+          for (const id of missingOnServer) {
+            await toggleWishlistApi(id);
+          }
+          const finalWishlist = missingOnServer.length > 0 ? await fetchWishlistIds() : serverWishlist;
+          if (!cancelled) dispatch(setWishlist(finalWishlist));
+        }
+      } catch {
+        // Keep local wishlist if wishlist endpoint is unavailable
+      }
+    };
+
+    syncUserData();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, user?.id, dispatch]);
 
   // Scroll to top on navigation
   useEffect(() => {
@@ -90,10 +172,12 @@ export const App: React.FC = () => {
       </div>
 
       {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <MobileBottomNav />}
 
       {/* Global Overlays */}
       <CartDrawer />
       <AuthModal />
+      <ToastContainer />
     </div>
   );
 };

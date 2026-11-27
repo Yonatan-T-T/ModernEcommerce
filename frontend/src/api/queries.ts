@@ -238,3 +238,15 @@ export const toggleWishlistApi = async (productId: number): Promise<boolean> => 
   const { data } = await api.post(`/users/wishlist/toggle/${productId}`);
   return data.data;
 };
+
+export const fetchUserCart = async (): Promise<any[]> => {
+  const { data } = await api.get('/users/cart');
+  return data;
+};
+
+export const syncUserCartApi = async (
+  items: { productId: number; productVariantId?: number; quantity: number }[]
+): Promise<any[]> => {
+  const { data } = await api.put('/users/cart', items);
+  return data;
+};

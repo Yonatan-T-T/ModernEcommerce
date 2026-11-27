@@ -118,3 +118,23 @@ public class CustomerDto
     public decimal TotalSpent { get; set; }
     public DateTime CreatedAt { get; set; }
 }
+
+public class CartItemDto
+{
+    public int ProductId { get; set; }
+    public int? ProductVariantId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? VariantName { get; set; }
+    public string? ImageUrl { get; set; }
+    public decimal Price { get; set; }
+    public decimal CostPrice { get; set; }
+    public int Quantity { get; set; }
+    public int MaxStock { get; set; }
+}
+
+public class SyncCartItemRequest
+{
+    public int ProductId { get; set; }
+    public int? ProductVariantId { get; set; }
+    public int Quantity { get; set; }
+}

@@ -97,25 +97,28 @@ public class ProductService : IProductService
             query = query.Where(p => p.IsBestSeller);
         }
 
-        // Sorting
+        // Sorting (cast decimal Price to double for SQLite ORDER BY compatibility)
         query = filter.SortBy switch
         {
-            "price_asc" => query.OrderBy(p => p.Price),
-            "price_desc" => query.OrderByDescending(p => p.Price),
+            "price_asc" => query.OrderBy(p => (double)p.Price),
+            "price_desc" => query.OrderByDescending(p => (double)p.Price),
             "rating" => query.OrderByDescending(p => p.Rating),
             "newest" => query.OrderByDescending(p => p.CreatedAt),
             "name_asc" => query.OrderBy(p => p.Name),
             _ => query.OrderByDescending(p => p.IsFeatured).ThenByDescending(p => p.CreatedAt)
         };
 
+        var pageIndex = Math.Max(1, filter.PageIndex);
+        var pageSize = Math.Max(1, filter.PageSize);
+
         var totalCount = await query.CountAsync();
         var items = await query
-            .Skip((filter.PageIndex - 1) * filter.PageSize)
-            .Take(filter.PageSize)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
         var dtos = items.Select(MapToDto).ToList();
-        return new PagedResult<ProductDto>(dtos, totalCount, filter.PageIndex, filter.PageSize);
+        return new PagedResult<ProductDto>(dtos, totalCount, pageIndex, pageSize);
     }
 
     public async Task<Result<ProductDto>> GetProductByIdAsync(int id)

@@ -34,9 +34,9 @@ export const WishlistPage: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
+            <div key={n} className="h-72 sm:h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
           ))}
         </div>
       ) : wishlistedProducts.length === 0 ? (
@@ -56,7 +56,7 @@ export const WishlistPage: React.FC = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
           {wishlistedProducts.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

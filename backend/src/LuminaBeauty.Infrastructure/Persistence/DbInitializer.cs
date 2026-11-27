@@ -1,6 +1,7 @@
 using LuminaBeauty.Application.Common.Interfaces;
 using LuminaBeauty.Domain.Entities;
 using LuminaBeauty.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace LuminaBeauty.Infrastructure.Persistence;
@@ -11,8 +12,43 @@ public static class DbInitializer
     {
         await context.Database.EnsureCreatedAsync();
 
+        // Ensure CartItems table exists even on previously created SQLite databases
+        await context.Database.ExecuteSqlRawAsync(@"
+            CREATE TABLE IF NOT EXISTS ""CartItems"" (
+                ""Id"" INTEGER NOT NULL CONSTRAINT ""PK_CartItems"" PRIMARY KEY AUTOINCREMENT,
+                ""UserId"" INTEGER NOT NULL,
+                ""ProductId"" INTEGER NOT NULL,
+                ""ProductVariantId"" INTEGER NULL,
+                ""Quantity"" INTEGER NOT NULL,
+                ""CreatedAt"" TEXT NOT NULL,
+                ""UpdatedAt"" TEXT NULL,
+                CONSTRAINT ""FK_CartItems_Users_UserId"" FOREIGN KEY (""UserId"") REFERENCES ""Users"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_CartItems_Products_ProductId"" FOREIGN KEY (""ProductId"") REFERENCES ""Products"" (""Id"") ON DELETE CASCADE,
+                CONSTRAINT ""FK_CartItems_ProductVariants_ProductVariantId"" FOREIGN KEY (""ProductVariantId"") REFERENCES ""ProductVariants"" (""Id"") ON DELETE SET NULL
+            );
+        ");
+
         if (context.Users.Any())
         {
+            // Repair any broken seeded Unsplash URLs in existing DBs
+            const string brokenUrlFragment = "photo-1608248597359-0097d446b142";
+            var brokenCategories = context.Categories.Where(c => c.ImageUrl != null && c.ImageUrl.Contains(brokenUrlFragment)).ToList();
+            foreach (var cat in brokenCategories)
+            {
+                cat.ImageUrl = "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&q=80&w=800";
+            }
+
+            var brokenImages = context.ProductImages.Where(i => i.ImageUrl.Contains(brokenUrlFragment)).ToList();
+            foreach (var img in brokenImages)
+            {
+                img.ImageUrl = "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=800";
+            }
+
+            if (brokenCategories.Count > 0 || brokenImages.Count > 0)
+            {
+                await context.SaveChangesAsync();
+            }
+
             return; // DB has been seeded
         }
 
@@ -109,7 +145,7 @@ public static class DbInitializer
             Name = "Body & Hair",
             Slug = "body-hair",
             Description = "Botanical hair oils, decadent body soufflés, and restorative treatments.",
-            ImageUrl = "https://images.unsplash.com/photo-1608248597359-0097d446b142?auto=format&fit=crop&q=80&w=800",
+            ImageUrl = "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&q=80&w=800",
             IsActive = true,
             DisplayOrder = 4
         };
@@ -188,7 +224,7 @@ public static class DbInitializer
             Images = new List<ProductImage>
             {
                 new() { ImageUrl = "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=800", IsPrimary = true, DisplayOrder = 0, AltText = "Celestial Radiance Bottle" },
-                new() { ImageUrl = "https://images.unsplash.com/photo-1608248597359-0097d446b142?auto=format&fit=crop&q=80&w=800", IsPrimary = false, DisplayOrder = 1, AltText = "Serum Dropper Texture" }
+                new() { ImageUrl = "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&q=80&w=800", IsPrimary = false, DisplayOrder = 1, AltText = "Serum Dropper Texture" }
             },
             Variants = new List<ProductVariant>
             {
@@ -360,7 +396,7 @@ public static class DbInitializer
             CreatedAt = DateTime.UtcNow.AddMonths(-1),
             Images = new List<ProductImage>
             {
-                new() { ImageUrl = "https://images.unsplash.com/photo-1608248597359-0097d446b142?auto=format&fit=crop&q=80&w=800", IsPrimary = true, DisplayOrder = 0, AltText = "Golden Nectar Bottle" }
+                new() { ImageUrl = "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&q=80&w=800", IsPrimary = true, DisplayOrder = 0, AltText = "Golden Nectar Bottle" }
             },
             Variants = new List<ProductVariant>
             {

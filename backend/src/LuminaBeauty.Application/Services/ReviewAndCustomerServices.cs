@@ -103,6 +103,8 @@ public interface ICustomerService
     Task<List<CustomerDto>> GetAllCustomersAsync();
     Task<List<int>> GetUserWishlistProductIdsAsync(int userId);
     Task<Result<bool>> ToggleWishlistItemAsync(int userId, int productId);
+    Task<List<CartItemDto>> GetUserCartAsync(int userId);
+    Task<List<CartItemDto>> SyncUserCartAsync(int userId, List<SyncCartItemRequest> items);
 }
 
 public class CustomerService : ICustomerService
@@ -160,5 +162,74 @@ public class CustomerService : ICustomerService
         _context.WishlistItems.Add(new WishlistItem { UserId = userId, ProductId = productId });
         await _context.SaveChangesAsync();
         return Result<bool>.Success(true, "Added to wishlist");
+    }
+
+    public async Task<List<CartItemDto>> GetUserCartAsync(int userId)
+    {
+        var cartItems = await _context.CartItems
+            .Where(c => c.UserId == userId)
+            .Include(c => c.Product)
+                .ThenInclude(p => p.Images)
+            .Include(c => c.ProductVariant)
+            .AsNoTracking()
+            .ToListAsync();
+
+        return cartItems
+            .Where(c => c.Product != null && c.Product.IsActive)
+            .Select(c =>
+            {
+                var maxStock = c.ProductVariant != null ? c.ProductVariant.StockQuantity : c.Product.StockQuantity;
+                var primaryImage = c.Product.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl
+                    ?? c.Product.Images.FirstOrDefault()?.ImageUrl;
+
+                return new CartItemDto
+                {
+                    ProductId = c.ProductId,
+                    ProductVariantId = c.ProductVariantId,
+                    Name = c.Product.Name,
+                    VariantName = c.ProductVariant?.VariantName,
+                    ImageUrl = primaryImage,
+                    Price = c.ProductVariant?.Price ?? c.Product.Price,
+                    CostPrice = c.ProductVariant?.CostPrice ?? c.Product.CostPrice,
+                    Quantity = Math.Max(1, Math.Min(c.Quantity, Math.Max(1, maxStock))),
+                    MaxStock = maxStock
+                };
+            })
+            .ToList();
+    }
+
+    public async Task<List<CartItemDto>> SyncUserCartAsync(int userId, List<SyncCartItemRequest> items)
+    {
+        var existing = await _context.CartItems
+            .Where(c => c.UserId == userId)
+            .ToListAsync();
+
+        _context.CartItems.RemoveRange(existing);
+
+        if (items != null && items.Count > 0)
+        {
+            var validProductIds = await _context.Products
+                .Where(p => p.IsActive)
+                .Select(p => p.Id)
+                .ToListAsync();
+
+            foreach (var item in items)
+            {
+                if (!validProductIds.Contains(item.ProductId) || item.Quantity <= 0)
+                    continue;
+
+                _context.CartItems.Add(new CartItem
+                {
+                    UserId = userId,
+                    ProductId = item.ProductId,
+                    ProductVariantId = item.ProductVariantId,
+                    Quantity = item.Quantity,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return await GetUserCartAsync(userId);
     }
 }

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { fetchCategories, fetchFeaturedProducts, fetchBestSellers } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
-import { ArrowRight, Sparkles, Droplets, Feather, ShieldCheck, Star } from 'lucide-react';
+import { ArrowRight, Sparkles, Star } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const { data: categories = [] } = useQuery({
@@ -22,15 +23,20 @@ export const HomePage: React.FC = () => {
   });
 
   return (
-    <div className="space-y-24 pb-20 overflow-hidden">
+    <div className="space-y-16 sm:space-y-24 pb-16 sm:pb-20 overflow-hidden">
       {/* 1. Hero Editorial Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-lumina-100/80 via-lumina-50 to-lumina-50 dark:from-charcoal-950 dark:via-charcoal-900 dark:to-charcoal-900 px-4 sm:px-6 lg:px-8">
+      <section className="relative min-h-[75vh] sm:min-h-[85vh] flex items-center justify-center bg-gradient-to-b from-lumina-100/80 via-lumina-50 to-lumina-50 dark:from-charcoal-950 dark:via-charcoal-900 dark:to-charcoal-900 px-4 sm:px-6 lg:px-8">
         {/* Subtle Ambient Glows */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-roseGold/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-200/10 dark:bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-12 relative z-10">
-          <div className="space-y-6 text-center lg:text-left">
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center py-8 sm:py-12 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="space-y-5 sm:space-y-6 text-center lg:text-left"
+          >
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-roseGold/15 border border-roseGold/30 text-roseGold text-xs font-semibold tracking-widest uppercase animate-fade-in">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Haute Parfumerie & Botanical Alchemy</span>
@@ -78,10 +84,15 @@ export const HomePage: React.FC = () => {
                 <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">Cruelty-Free</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Hero Visual Showcase */}
-          <div className="relative flex justify-center items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+            className="relative flex justify-center items-center"
+          >
             <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/60 dark:border-charcoal-800/80">
               <img
                 src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=1000"
@@ -113,13 +124,13 @@ export const HomePage: React.FC = () => {
                 </Link>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* 2. Collections by Category */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-3 mb-12">
+        <div className="text-center space-y-2 sm:space-y-3 mb-8 sm:mb-12">
           <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
             Curated Formulations
           </span>
@@ -131,12 +142,12 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar">
           {categories.map((category) => (
             <Link
               key={category.id}
               to={`/shop?categoryId=${category.id}`}
-              className="group relative h-96 rounded-2xl overflow-hidden shadow-sm hover:shadow-luxury-hover border border-lumina-200/60 dark:border-charcoal-800 transition-all duration-300"
+              className="group relative h-80 sm:h-96 min-w-[75vw] sm:min-w-0 snap-center rounded-2xl overflow-hidden shadow-sm hover:shadow-luxury-hover border border-lumina-200/60 dark:border-charcoal-800 transition-all duration-300 shrink-0"
             >
               <img
                 src={category.imageUrl || 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800'}
@@ -186,13 +197,13 @@ export const HomePage: React.FC = () => {
         </div>
 
         {loadingFeatured ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
+              <div key={n} className="h-72 sm:h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -292,13 +303,13 @@ export const HomePage: React.FC = () => {
         </div>
 
         {loadingBestSellers ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
+              <div key={n} className="h-72 sm:h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-6">
             {bestSellers.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

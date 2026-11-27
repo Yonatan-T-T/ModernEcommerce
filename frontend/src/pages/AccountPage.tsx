@@ -139,10 +139,10 @@ export const AccountPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-lumina-200 dark:border-charcoal-800">
+      <div className="flex border-b border-lumina-200 dark:border-charcoal-800 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setSearchParams({ tab: 'orders' })}
-          className={`pb-3 px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 transition-all ${
+          className={`pb-3 px-4 sm:px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 whitespace-nowrap transition-all ${
             activeTab === 'orders'
               ? 'border-roseGold text-roseGold'
               : 'border-transparent text-charcoal-500 hover:text-charcoal-900 dark:hover:text-white'
@@ -154,7 +154,7 @@ export const AccountPage: React.FC = () => {
 
         <button
           onClick={() => setSearchParams({ tab: 'wishlist' })}
-          className={`pb-3 px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 transition-all ${
+          className={`pb-3 px-4 sm:px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 whitespace-nowrap transition-all ${
             activeTab === 'wishlist'
               ? 'border-roseGold text-roseGold'
               : 'border-transparent text-charcoal-500 hover:text-charcoal-900 dark:hover:text-white'
@@ -166,7 +166,7 @@ export const AccountPage: React.FC = () => {
 
         <button
           onClick={() => setSearchParams({ tab: 'profile' })}
-          className={`pb-3 px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 transition-all ${
+          className={`pb-3 px-4 sm:px-6 text-xs font-semibold uppercase tracking-wider border-b-2 flex items-center gap-2 whitespace-nowrap transition-all ${
             activeTab === 'profile'
               ? 'border-roseGold text-roseGold'
               : 'border-transparent text-charcoal-500 hover:text-charcoal-900 dark:hover:text-white'

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LuminaBeauty.Application.DTOs.Common;
 using LuminaBeauty.Application.Services;
 
 namespace LuminaBeauty.API.Controllers;
@@ -36,5 +37,21 @@ public class UsersController : BaseApiController
         if (!CurrentUserId.HasValue) return Unauthorized();
         var result = await _customerService.ToggleWishlistItemAsync(CurrentUserId.Value, productId);
         return Ok(result);
+    }
+
+    [HttpGet("cart")]
+    public async Task<IActionResult> GetMyCart()
+    {
+        if (!CurrentUserId.HasValue) return Unauthorized();
+        var items = await _customerService.GetUserCartAsync(CurrentUserId.Value);
+        return Ok(items);
+    }
+
+    [HttpPut("cart")]
+    public async Task<IActionResult> SyncMyCart([FromBody] List<SyncCartItemRequest> items)
+    {
+        if (!CurrentUserId.HasValue) return Unauthorized();
+        var synced = await _customerService.SyncUserCartAsync(CurrentUserId.Value, items);
+        return Ok(synced);
     }
 }

@@ -93,6 +93,12 @@ export const cartSlice = createSlice({
       state.discountAmount = 0;
       localStorage.removeItem('lumina_cart');
     },
+    setCartItems: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
+      state.couponCode = null;
+      state.discountAmount = 0;
+      saveToLocalStorage(state.items);
+    },
     toggleCartDrawer: (state) => {
       state.isDrawerOpen = !state.isDrawerOpen;
     },
@@ -118,6 +124,7 @@ export const {
   removeFromCart,
   updateQuantity,
   clearCart,
+  setCartItems,
   toggleCartDrawer,
   setCartDrawer,
   applyCoupon,

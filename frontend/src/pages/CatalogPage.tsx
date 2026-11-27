@@ -242,16 +242,16 @@ export const CatalogPage: React.FC = () => {
           </div>
 
           {/* Search bar & Sort Controls */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full md:w-auto">
             {/* Live Search Input */}
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-initial">
               <Search className="w-4 h-4 text-charcoal-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
                 placeholder="Search by name, active..."
-                className="w-48 sm:w-64 pl-9 pr-3 py-2 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white placeholder:text-charcoal-400 rounded-xl focus:outline-none focus:border-roseGold"
+                className="w-full sm:w-64 pl-9 pr-3 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 text-charcoal-900 dark:text-white placeholder:text-charcoal-400 rounded-xl focus:outline-none focus:border-roseGold"
               />
             </div>
 
@@ -259,25 +259,72 @@ export const CatalogPage: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => updateFilter('sortBy', e.target.value)}
-              className="px-3 py-2 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 rounded-xl text-charcoal-700 dark:text-lumina-200 focus:outline-none focus:border-roseGold font-medium"
+              className="px-3 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 rounded-xl text-charcoal-700 dark:text-lumina-200 focus:outline-none focus:border-roseGold font-medium"
             >
-              <option value="">Sort by: Featured</option>
+              <option value="">Sort: Featured</option>
               <option value="price_asc">Price: Low to High</option>
               <option value="price_desc">Price: High to Low</option>
               <option value="rating">Highest Rated</option>
               <option value="newest">Newest Arrivals</option>
-              <option value="name_asc">Alphabetical (A-Z)</option>
+              <option value="name_asc">A - Z</option>
             </select>
 
             {/* Mobile Filter Toggle */}
             <button
               onClick={() => setIsMobileFiltersOpen(true)}
-              className="lg:hidden p-2 rounded-xl bg-lumina-100 dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700 text-charcoal-700 dark:text-lumina-200 hover:text-roseGold flex items-center gap-1.5 text-xs font-semibold"
+              className="lg:hidden px-3 py-2.5 rounded-xl bg-lumina-100 dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 text-charcoal-700 dark:text-lumina-200 hover:text-roseGold flex items-center gap-1.5 text-xs font-semibold"
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span>Filters</span>
             </button>
           </div>
+        </div>
+
+        {/* Quick-Filter Category Pill Strip (1-tap mobile & desktop convenience) */}
+        <div className="mt-5 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <button
+            onClick={() => updateFilter('categoryId', undefined)}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
+              !categoryId && !isBestSeller
+                ? 'bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 border-transparent shadow-xs'
+                : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
+            }`}
+          >
+            All Formulations
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => updateFilter('categoryId', categoryId === c.id ? undefined : c.id)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
+                categoryId === c.id
+                  ? 'bg-roseGold text-white border-transparent shadow-xs'
+                  : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
+              }`}
+            >
+              {c.name}
+            </button>
+          ))}
+          <button
+            onClick={() => updateFilter('isBestSeller', !isBestSeller)}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
+              isBestSeller
+                ? 'bg-roseGold text-white border-transparent shadow-xs'
+                : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
+            }`}
+          >
+            Bestsellers
+          </button>
+          <button
+            onClick={() => updateFilter('inStockOnly', !inStockOnly)}
+            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
+              inStockOnly
+                ? 'bg-emerald-600 text-white border-transparent shadow-xs'
+                : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
+            }`}
+          >
+            In Stock
+          </button>
         </div>
       </div>
 
@@ -306,9 +353,9 @@ export const CatalogPage: React.FC = () => {
         {/* Product Grid Area */}
         <main className="lg:col-span-3">
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={n} className="h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
+                <div key={n} className="h-72 sm:h-96 rounded-2xl bg-lumina-200 dark:bg-charcoal-800 animate-pulse" />
               ))}
             </div>
           ) : products.length === 0 ? (
@@ -329,7 +376,7 @@ export const CatalogPage: React.FC = () => {
             </div>
           ) : (
             <div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
