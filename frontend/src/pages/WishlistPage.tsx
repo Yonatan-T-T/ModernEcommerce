@@ -5,9 +5,11 @@ import { RootState } from '@/store/store';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
+import { useTranslation } from '@/i18n/translations';
 import { Heart, ArrowRight } from 'lucide-react';
 
 export const WishlistPage: React.FC = () => {
+  const { t } = useTranslation();
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
 
   const { data: productsData, isLoading } = useQuery({
@@ -23,13 +25,13 @@ export const WishlistPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <div>
         <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-roseGold">
-          Curated Favourites
+          {t('wishlist.eyebrow')}
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white mt-1">
-          Your Beauty Wishlist ({wishlistIds.length})
+          {t('wishlist.title')} ({wishlistIds.length})
         </h1>
         <p className="text-xs text-charcoal-500 dark:text-lumina-400 mt-1">
-          Formulations reserved for your personal skincare and beauty rituals.
+          {t('wishlist.subtitle')}
         </p>
       </div>
 
@@ -43,16 +45,16 @@ export const WishlistPage: React.FC = () => {
         <div className="text-center py-24 space-y-4 bg-white dark:bg-charcoal-800/40 rounded-3xl border border-dashed border-lumina-300 dark:border-charcoal-700 p-8">
           <Heart className="w-12 h-12 text-charcoal-300 dark:text-charcoal-600 mx-auto" />
           <h3 className="font-serif text-xl font-medium text-charcoal-900 dark:text-white">
-            Your wishlist is empty
+            {t('wishlist.empty')}
           </h3>
           <p className="text-xs text-charcoal-500 max-w-sm mx-auto">
-            Click the heart icon on any product to save it to your personal beauty collection.
+            {t('wishlist.emptyDesc')}
           </p>
           <Link
             to="/shop"
             className="inline-block mt-4 px-8 py-3 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase hover:bg-roseGold transition-colors"
           >
-            Explore the Collection
+            {t('home.exploreLink')}
           </Link>
         </div>
       ) : (

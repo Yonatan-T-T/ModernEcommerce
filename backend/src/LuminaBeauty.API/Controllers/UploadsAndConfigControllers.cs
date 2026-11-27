@@ -52,8 +52,8 @@ public class ConfigController : BaseApiController
         {
             StoreName = _config["StoreSettings:StoreName"] ?? "Lumina Beauty",
             Tagline = _config["StoreSettings:Tagline"] ?? "Pure Luxury. Ageless Radiance.",
-            Currency = _config["StoreSettings:Currency"] ?? "USD",
-            CurrencySymbol = _config["StoreSettings:CurrencySymbol"] ?? "$",
+            Currency = _config["StoreSettings:Currency"] ?? "ETB",
+            CurrencySymbol = _config["StoreSettings:CurrencySymbol"] ?? "ETB ",
             FreeShippingThreshold = decimal.TryParse(_config["StoreSettings:FreeShippingThreshold"], out var threshold) ? threshold : 75.00m,
             StandardShippingFee = decimal.TryParse(_config["StoreSettings:StandardShippingFee"], out var fee) ? fee : 7.99m
         };

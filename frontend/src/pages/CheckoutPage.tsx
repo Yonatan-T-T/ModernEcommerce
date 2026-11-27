@@ -5,6 +5,7 @@ import { RootState } from '@/store/store';
 import { clearCart } from '@/store/slices/cartSlice';
 import { createOrder } from '@/api/queries';
 import { formatPrice } from '@/utils/cn';
+import { useTranslation } from '@/i18n/translations';
 import {
   ShieldCheck,
   CreditCard,
@@ -18,6 +19,7 @@ import {
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { items, couponCode, discountAmount } = useSelector((state: RootState) => state.cart);
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -113,11 +115,11 @@ export const CheckoutPage: React.FC = () => {
       <div className="mb-8 flex items-center justify-between">
         <Link to="/cart" className="text-xs text-charcoal-600 dark:text-lumina-300 hover:text-roseGold flex items-center gap-1.5 font-medium transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          <span>Return to Bag</span>
+          <span>{t('checkout.returnToBag')}</span>
         </Link>
         <div className="flex items-center space-x-2 text-xs text-charcoal-500 dark:text-lumina-400">
           <Lock className="w-3.5 h-3.5 text-roseGold" />
-          <span>Encrypted High-Security Checkout</span>
+          <span>{t('checkout.secure')}</span>
         </div>
       </div>
 
@@ -136,17 +138,17 @@ export const CheckoutPage: React.FC = () => {
               <div className="flex items-center justify-between border-b border-lumina-100 dark:border-charcoal-700 pb-3">
                 <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs flex items-center justify-center font-bold">1</span>
-                  Client Contact
+                  {t('checkout.contact')}
                 </h3>
                 {!isAuthenticated && (
-                  <span className="text-xs text-roseGold font-medium">Guest Checkout</span>
+                  <span className="text-xs text-roseGold font-medium">{t('checkout.guest')}</span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-charcoal-700 dark:text-lumina-300 mb-1">
-                    Full Name *
+                    {t('checkout.fullName')}
                   </label>
                   <input
                     type="text"
@@ -196,14 +198,14 @@ export const CheckoutPage: React.FC = () => {
               <div className="border-b border-lumina-100 dark:border-charcoal-700 pb-3">
                 <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs flex items-center justify-center font-bold">2</span>
-                  Delivery Destination
+                  {t('checkout.delivery')}
                 </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-medium text-charcoal-700 dark:text-lumina-300 mb-1">
-                    Street Address *
+                    {t('checkout.street')}
                   </label>
                   <input
                     type="text"
@@ -281,7 +283,7 @@ export const CheckoutPage: React.FC = () => {
               <div className="border-b border-lumina-100 dark:border-charcoal-700 pb-3">
                 <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-roseGold text-white text-xs flex items-center justify-center font-bold">3</span>
-                  Payment Method
+                  {t('checkout.payment')}
                 </h3>
               </div>
 
@@ -345,7 +347,7 @@ export const CheckoutPage: React.FC = () => {
               className="w-full py-4 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-all shadow-xl disabled:opacity-50 flex items-center justify-center space-x-2"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>{loading ? 'Processing Order...' : `Complete Order — ${formatPrice(finalTotal)}`}</span>
+              <span>{loading ? '...' : `${t('checkout.completeOrder')} — ${formatPrice(finalTotal)}`}</span>
             </button>
           </form>
         </div>
@@ -354,7 +356,7 @@ export const CheckoutPage: React.FC = () => {
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white dark:bg-charcoal-800/80 rounded-3xl p-6 sm:p-8 border border-lumina-200 dark:border-charcoal-700 shadow-sm space-y-6 sticky top-28">
             <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white border-b border-lumina-100 dark:border-charcoal-700 pb-3">
-              Order Items ({items.length})
+              {t('checkout.orderItems')} ({items.length})
             </h3>
 
             <div className="divide-y divide-lumina-100 dark:divide-charcoal-700/60 max-h-80 overflow-y-auto space-y-3">
@@ -387,34 +389,34 @@ export const CheckoutPage: React.FC = () => {
 
             <div className="pt-4 border-t border-lumina-200 dark:border-charcoal-700 space-y-2 text-xs text-charcoal-600 dark:text-lumina-300">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t('cart.subtotal')}</span>
                 <span className="font-semibold text-charcoal-900 dark:text-white">{formatPrice(subTotal)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
-                  <span>Coupon Discount ({couponCode})</span>
+                  <span>{t('cart.discount')} ({couponCode})</span>
                   <span>-{formatPrice(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span>Shipping</span>
+                <span>{t('cart.shipping')}</span>
                 <span>
                   {shippingFee === 0 ? (
-                    <span className="text-emerald-600 font-medium">Free</span>
+                    <span className="text-emerald-600 font-medium">{t('cart.free')}</span>
                   ) : (
                     formatPrice(shippingFee)
                   )}
                 </span>
               </div>
               <div className="flex justify-between text-base font-bold text-charcoal-900 dark:text-white pt-3 border-t border-lumina-200 dark:border-charcoal-700">
-                <span>Total Amount</span>
+                <span>{t('checkout.totalAmount')}</span>
                 <span className="text-roseGold">{formatPrice(finalTotal)}</span>
               </div>
             </div>
 
             <div className="p-3 bg-lumina-100 dark:bg-charcoal-900 rounded-xl text-[11px] text-charcoal-500 space-y-1">
-              <p>✔ Inventory is reserved instantly upon clicking Complete Order.</p>
-              <p>✔ Real-time tracking and delivery updates will be emailed.</p>
+              <p>✔ {t('checkout.reserveNote1')}</p>
+              <p>✔ {t('checkout.reserveNote2')}</p>
             </div>
           </div>
         </div>

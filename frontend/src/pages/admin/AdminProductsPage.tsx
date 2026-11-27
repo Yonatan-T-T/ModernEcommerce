@@ -587,7 +587,7 @@ export const AdminProductsPage: React.FC = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Selling Price ($) *
+                    Selling Price (ETB) *
                   </label>
                   <input
                     type="number"
@@ -600,7 +600,7 @@ export const AdminProductsPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Cost Price ($) *
+                    Cost Price (ETB) *
                   </label>
                   <input
                     type="number"
@@ -613,7 +613,7 @@ export const AdminProductsPage: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Compare At Price ($)
+                    Compare At Price (ETB)
                   </label>
                   <input
                     type="number"

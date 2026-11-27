@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(amount: number, currencySymbol = '$'): string {
+export function formatPrice(amount: number, currencySymbol = 'ETB '): string {
   return `${currencySymbol}${amount.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

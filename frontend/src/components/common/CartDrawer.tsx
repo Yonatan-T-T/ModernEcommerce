@@ -11,6 +11,7 @@ import {
   removeCoupon,
 } from '@/store/slices/cartSlice';
 import { showToast } from '@/store/slices/toastSlice';
+import { useTranslation } from '@/i18n/translations';
 import { formatPrice } from '@/utils/cn';
 import { validateCoupon } from '@/api/queries';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Sparkles } from 'lucide-react';
@@ -18,6 +19,7 @@ import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Sparkles } from '
 export const CartDrawer: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { items, isDrawerOpen, couponCode, discountAmount } = useSelector(
     (state: RootState) => state.cart
@@ -86,7 +88,7 @@ export const CartDrawer: React.FC = () => {
                 <div className="flex items-center space-x-2.5">
                   <ShoppingBag className="w-5 h-5 text-roseGold" />
                   <h2 className="font-serif text-lg font-semibold tracking-wide text-charcoal-900 dark:text-white">
-                    Your Beauty Bag ({items.reduce((acc, i) => acc + i.quantity, 0)})
+                    {t('cart.title')} ({items.reduce((acc, i) => acc + i.quantity, 0)})
                   </h2>
                 </div>
                 <button
@@ -133,10 +135,10 @@ export const CartDrawer: React.FC = () => {
                       <ShoppingBag className="w-8 h-8" />
                     </div>
                     <h3 className="font-serif text-lg font-medium text-charcoal-900 dark:text-white">
-                      Your bag is empty
+                      {t('cart.empty')}
                     </h3>
                     <p className="text-xs text-charcoal-500 dark:text-lumina-400 max-w-xs leading-relaxed">
-                      Immerse yourself in our collection of cellular peptide elixirs and Parisian pigments.
+                      {t('cart.emptyDesc')}
                     </p>
                     <button
                       onClick={() => {
@@ -145,7 +147,7 @@ export const CartDrawer: React.FC = () => {
                       }}
                       className="mt-4 px-7 py-3 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-wider uppercase hover:bg-roseGold transition-colors"
                     >
-                      Explore Collection
+                      {t('home.exploreLink')}
                     </button>
                   </div>
                 ) : (
@@ -282,7 +284,7 @@ export const CartDrawer: React.FC = () => {
                   {/* Calculations */}
                   <div className="space-y-1.5 text-xs text-charcoal-600 dark:text-lumina-300">
                     <div className="flex justify-between">
-                      <span>Subtotal</span>
+                      <span>{t('cart.subtotal')}</span>
                       <span className="font-semibold text-charcoal-900 dark:text-white">
                         {formatPrice(subTotal)}
                       </span>
@@ -294,17 +296,17 @@ export const CartDrawer: React.FC = () => {
                       </div>
                     )}
                     <div className="flex justify-between">
-                      <span>Estimated Shipping</span>
+                      <span>{t('cart.shipping')}</span>
                       <span>
                         {shippingFee === 0 ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">{t('cart.free')}</span>
                         ) : (
                           formatPrice(shippingFee)
                         )}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm font-bold text-charcoal-900 dark:text-white pt-2 border-t border-lumina-200 dark:border-white/10">
-                      <span>Total</span>
+                      <span>{t('cart.total')}</span>
                       <span className="text-roseGold">{formatPrice(finalTotal)}</span>
                     </div>
                   </div>
@@ -318,7 +320,7 @@ export const CartDrawer: React.FC = () => {
                       }}
                       className="w-full py-3.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase flex items-center justify-center space-x-2 hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-all shadow-md group"
                     >
-                      <span>Proceed to Checkout</span>
+                      <span>{t('cart.checkout')}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button
@@ -328,7 +330,7 @@ export const CartDrawer: React.FC = () => {
                       }}
                       className="w-full py-2 text-center text-xs text-charcoal-500 dark:text-lumina-400 hover:text-roseGold font-medium transition-colors"
                     >
-                      View Full Shopping Bag
+                      {t('cart.viewFull')}
                     </button>
                   </div>
                 </div>

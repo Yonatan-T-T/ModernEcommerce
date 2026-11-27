@@ -81,7 +81,7 @@ export const AdminCouponsPage: React.FC = () => {
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{c.description}</p>
               </div>
               <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-roseGold/15 text-roseGold">
-                {c.discountType === 0 ? `${c.discountValue}% Off` : `$${c.discountValue} Off`}
+                {c.discountType === 0 ? `${c.discountValue}% Off` : `ETB ${c.discountValue} Off`}
               </span>
             </div>
 
@@ -147,11 +147,11 @@ export const AdminCouponsPage: React.FC = () => {
                     className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#1C1C22] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl font-medium"
                   >
                     <option value={0}>Percentage (%)</option>
-                    <option value={1}>Fixed Amount ($)</option>
+                    <option value={1}>Fixed Amount (ETB)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Value ({discountType === 0 ? '%' : '$'})</label>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Value ({discountType === 0 ? '%' : 'ETB'})</label>
                   <input
                     type="number"
                     value={discountValue}
@@ -162,7 +162,7 @@ export const AdminCouponsPage: React.FC = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Minimum Spend ($)</label>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Minimum Spend (ETB)</label>
                 <input
                   type="number"
                   value={minimumSpend}

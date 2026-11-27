@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { closeAuthModal, setAuthModalTab, setCredentials } from '@/store/slices/authSlice';
+import { useTranslation } from '@/i18n/translations';
 import api from '@/api/client';
 import { X, Lock, Mail, User as UserIcon, Phone, ShieldCheck, Sparkles } from 'lucide-react';
 
@@ -10,6 +11,7 @@ export const AuthModal: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const { isAuthModalOpen, authModalTab } = useSelector((state: RootState) => state.auth);
 
   const [email, setEmail] = useState('');
@@ -111,10 +113,10 @@ export const AuthModal: React.FC = () => {
           <div className="flex justify-between items-start mb-6">
             <div>
               <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-roseGold">
-                Client Concierge
+                {t('auth.concierge')}
               </span>
               <h2 className="font-serif text-2xl font-semibold text-charcoal-900 dark:text-white mt-1">
-                {authModalTab === 'login' ? 'Welcome Back' : 'Create an Account'}
+                {authModalTab === 'login' ? t('auth.welcomeBack') : t('auth.createAccount')}
               </h2>
             </div>
             <button
@@ -129,7 +131,7 @@ export const AuthModal: React.FC = () => {
           <div className="mb-6 p-3 rounded-xl bg-lumina-100 dark:bg-charcoal-800 border border-lumina-200 dark:border-charcoal-700">
             <p className="text-[11px] font-semibold text-charcoal-600 dark:text-lumina-300 mb-2 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-roseGold" />
-              Quick Demo Access (1-Click Fill & Sign In):
+              {t('auth.quickDemo')}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -138,7 +140,7 @@ export const AuthModal: React.FC = () => {
                 className="py-1.5 px-2 bg-white dark:bg-charcoal-900 border border-roseGold/40 text-charcoal-800 dark:text-white hover:bg-roseGold hover:text-white dark:hover:bg-roseGold rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors shadow-sm"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-roseGold" />
-                Admin Demo
+                {t('auth.adminDemo')}
               </button>
               <button
                 type="button"
@@ -146,7 +148,7 @@ export const AuthModal: React.FC = () => {
                 className="py-1.5 px-2 bg-white dark:bg-charcoal-900 border border-lumina-300 dark:border-charcoal-600 text-charcoal-800 dark:text-white hover:bg-roseGold hover:text-white dark:hover:bg-roseGold rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition-colors shadow-sm"
               >
                 <UserIcon className="w-3.5 h-3.5 text-charcoal-500" />
-                Customer Demo
+                {t('auth.customerDemo')}
               </button>
             </div>
           </div>
@@ -164,7 +166,7 @@ export const AuthModal: React.FC = () => {
                   : 'border-transparent text-charcoal-500 dark:text-lumina-400 hover:text-charcoal-900 dark:hover:text-white'
               }`}
             >
-              Sign In
+              {t('auth.signIn')}
             </button>
             <button
               onClick={() => {
@@ -177,7 +179,7 @@ export const AuthModal: React.FC = () => {
                   : 'border-transparent text-charcoal-500 dark:text-lumina-400 hover:text-charcoal-900 dark:hover:text-white'
               }`}
             >
-              Register
+              {t('auth.register')}
             </button>
           </div>
 

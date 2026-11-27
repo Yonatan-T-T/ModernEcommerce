@@ -4,12 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { toggleCartDrawer } from '@/store/slices/cartSlice';
 import { openAuthModal } from '@/store/slices/authSlice';
+import { useTranslation } from '@/i18n/translations';
 import { Home, Sparkles, Heart, ShoppingBag, User } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const { items } = useSelector((state: RootState) => state.cart);
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
@@ -43,7 +45,7 @@ export const MobileBottomNav: React.FC = () => {
           }
         >
           <Home className="w-5 h-5" />
-          <span className="text-[10px] font-semibold tracking-wide">Home</span>
+          <span className="text-[10px] font-semibold tracking-wide">{t('mobile.home')}</span>
         </NavLink>
 
         <NavLink
@@ -57,7 +59,7 @@ export const MobileBottomNav: React.FC = () => {
           }
         >
           <Sparkles className="w-5 h-5" />
-          <span className="text-[10px] font-semibold tracking-wide">Shop</span>
+          <span className="text-[10px] font-semibold tracking-wide">{t('mobile.shop')}</span>
         </NavLink>
 
         <NavLink
@@ -78,7 +80,7 @@ export const MobileBottomNav: React.FC = () => {
               </span>
             )}
           </div>
-          <span className="text-[10px] font-semibold tracking-wide">Saved</span>
+          <span className="text-[10px] font-semibold tracking-wide">{t('mobile.saved')}</span>
         </NavLink>
 
         <button
@@ -94,7 +96,7 @@ export const MobileBottomNav: React.FC = () => {
               </span>
             )}
           </div>
-          <span className="text-[10px] font-semibold tracking-wide">Bag</span>
+          <span className="text-[10px] font-semibold tracking-wide">{t('mobile.bag')}</span>
         </button>
 
         <button
@@ -108,7 +110,7 @@ export const MobileBottomNav: React.FC = () => {
         >
           <User className="w-5 h-5" />
           <span className="text-[10px] font-semibold tracking-wide">
-            {isAuthenticated ? 'Account' : 'Sign In'}
+            {isAuthenticated ? t('mobile.account') : t('nav.signIn')}
           </span>
         </button>
       </div>

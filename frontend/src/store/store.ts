@@ -3,7 +3,7 @@ import authReducer from './slices/authSlice';
 import cartReducer, { setCartItems } from './slices/cartSlice';
 import wishlistReducer, { setWishlist } from './slices/wishlistSlice';
 import toastReducer from './slices/toastSlice';
-import { themeSlice, configSlice } from './slices/themeAndConfigSlices';
+import { themeSlice, configSlice, languageSlice } from './slices/themeAndConfigSlices';
 import { syncUserCartApi, toggleWishlistApi } from '@/api/queries';
 
 const userSyncMiddleware: Middleware = (storeApi) => (next) => (action: any) => {
@@ -53,6 +53,7 @@ export const store = configureStore({
     toast: toastReducer,
     theme: themeSlice.reducer,
     config: configSlice.reducer,
+    language: languageSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(userSyncMiddleware),

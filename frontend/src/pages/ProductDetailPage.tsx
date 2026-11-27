@@ -6,6 +6,7 @@ import { RootState } from '@/store/store';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toggleWishlist } from '@/store/slices/wishlistSlice';
 import { showToast } from '@/store/slices/toastSlice';
+import { useTranslation } from '@/i18n/translations';
 import { fetchProductBySlug, fetchReviews, submitReview, fetchFeaturedProducts } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
 import { formatPrice } from '@/utils/cn';
@@ -27,6 +28,7 @@ export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
   const { user } = useSelector((state: RootState) => state.auth);
@@ -366,14 +368,14 @@ export const ProductDetailPage: React.FC = () => {
               {justAdded ? (
                 <>
                   <Check className="w-4 h-4" />
-                  <span>Added to Bag</span>
+                  <span>{t('product.addedToBag')}</span>
                 </>
               ) : currentStock === 0 ? (
-                <span>Out of Stock</span>
+                <span>{t('product.outOfStock')}</span>
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Bag — {formatPrice(currentPrice * quantity)}</span>
+                  <span>{t('product.addToBag')} — {formatPrice(currentPrice * quantity)}</span>
                 </>
               )}
             </button>
@@ -395,7 +397,7 @@ export const ProductDetailPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-lumina-200 dark:border-charcoal-800 text-xs text-charcoal-600 dark:text-lumina-300">
             <div className="flex items-center space-x-2">
               <Truck className="w-4 h-4 text-roseGold shrink-0" />
-              <span>Complimentary shipping over $75</span>
+              <span>Complimentary shipping over ETB 75</span>
             </div>
             <div className="flex items-center space-x-2">
               <ShieldCheck className="w-4 h-4 text-roseGold shrink-0" />
@@ -626,7 +628,7 @@ export const ProductDetailPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Sticky Mobile Add-to-Bag Bar */}
+          {/* Sticky Mobile Add-to-Bag Bar */}
       <div className="md:hidden fixed bottom-16 inset-x-0 z-30 bg-white/95 dark:bg-charcoal-900/95 backdrop-blur-xl border-t border-lumina-200/80 dark:border-white/10 px-4 py-2.5 flex items-center justify-between gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-charcoal-900 dark:text-white truncate">{product.name}</p>
@@ -644,14 +646,14 @@ export const ProductDetailPage: React.FC = () => {
           {justAdded ? (
             <>
               <Check className="w-3.5 h-3.5" />
-              <span>Added</span>
+              <span>{t('product.added')}</span>
             </>
           ) : currentStock === 0 ? (
-            <span>Sold Out</span>
+            <span>{t('product.soldOut')}</span>
           ) : (
             <>
               <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Add to Bag</span>
+              <span>{t('product.addToBag')}</span>
             </>
           )}
         </button>

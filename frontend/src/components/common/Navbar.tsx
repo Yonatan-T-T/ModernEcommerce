@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { RootState } from '@/store/store';
 import { toggleCartDrawer } from '@/store/slices/cartSlice';
 import { openAuthModal, logout } from '@/store/slices/authSlice';
-import { toggleTheme } from '@/store/slices/themeAndConfigSlices';
+import { toggleTheme, toggleLanguage } from '@/store/slices/themeAndConfigSlices';
+import { useTranslation } from '@/i18n/translations';
 import {
   ShoppingBag,
   Heart,
@@ -19,11 +20,13 @@ import {
   Menu,
   X,
   Sparkles,
+  Languages,
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t, language } = useTranslation();
 
   const { items } = useSelector((state: RootState) => state.cart);
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
@@ -55,7 +58,7 @@ export const Navbar: React.FC = () => {
         <span className="inline-flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-roseGold shrink-0" />
           <span className="truncate">
-            Free Shipping Over {config.currencySymbol}{config.freeShippingThreshold} · Code:{' '}
+            {t('nav.freeShippingPromo')} {config.currencySymbol}{config.freeShippingThreshold} · {t('nav.code')}:{' '}
             <strong className="underline decoration-roseGold/60 underline-offset-2">LUMINA15</strong>
           </span>
         </span>
@@ -80,31 +83,31 @@ export const Navbar: React.FC = () => {
               to="/shop"
               className="text-charcoal-700 dark:text-lumina-200 hover:text-roseGold dark:hover:text-roseGold transition-colors"
             >
-              All Products
+              {t('nav.allProducts')}
             </Link>
             <Link
               to="/shop?categoryId=1"
               className="text-charcoal-700 dark:text-lumina-200 hover:text-roseGold dark:hover:text-roseGold transition-colors"
             >
-              Skincare
+              {t('nav.skincare')}
             </Link>
             <Link
               to="/shop?categoryId=2"
               className="text-charcoal-700 dark:text-lumina-200 hover:text-roseGold dark:hover:text-roseGold transition-colors"
             >
-              Makeup
+              {t('nav.makeup')}
             </Link>
             <Link
               to="/shop?categoryId=3"
               className="text-charcoal-700 dark:text-lumina-200 hover:text-roseGold dark:hover:text-roseGold transition-colors"
             >
-              Fragrance
+              {t('nav.fragrance')}
             </Link>
             <Link
               to="/shop?isBestSeller=true"
               className="text-roseGold font-semibold hover:opacity-80 transition-opacity"
             >
-              Bestsellers
+              {t('nav.bestsellers')}
             </Link>
           </nav>
 
@@ -152,6 +155,17 @@ export const Navbar: React.FC = () => {
                 </button>
               )}
             </div>
+
+            {/* Language Switcher (EN / አማ) */}
+            <button
+              onClick={() => dispatch(toggleLanguage())}
+              className="px-2.5 py-1.5 rounded-full border border-lumina-200 dark:border-white/10 text-charcoal-700 dark:text-lumina-200 hover:border-roseGold hover:text-roseGold transition-colors flex items-center gap-1 text-[11px] font-bold"
+              title={language === 'en' ? 'Switch to Amharic (አማርኛ)' : 'Switch to English'}
+              aria-label="Switch Language"
+            >
+              <Languages className="w-3.5 h-3.5 text-roseGold" />
+              <span>{language === 'en' ? 'አማ' : 'EN'}</span>
+            </button>
 
             {/* Dark/Light Toggle */}
             <button

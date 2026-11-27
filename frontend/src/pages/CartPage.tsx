@@ -5,11 +5,13 @@ import { RootState } from '@/store/store';
 import { removeFromCart, updateQuantity, applyCoupon, removeCoupon } from '@/store/slices/cartSlice';
 import { formatPrice } from '@/utils/cn';
 import { validateCoupon } from '@/api/queries';
+import { useTranslation } from '@/i18n/translations';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, Sparkles, ShieldCheck } from 'lucide-react';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const { items, couponCode, discountAmount } = useSelector((state: RootState) => state.cart);
   const { config } = useSelector((state: RootState) => state.config);
@@ -54,16 +56,16 @@ export const CartPage: React.FC = () => {
           <ShoppingBag className="w-10 h-10" />
         </div>
         <h2 className="font-serif text-3xl font-semibold text-charcoal-900 dark:text-white">
-          Your Beauty Bag is Empty
+          {t('cart.empty')}
         </h2>
         <p className="text-sm text-charcoal-500 max-w-md mx-auto">
-          Elevate your daily ritual with our multi-peptide serums and silk foundations.
+          {t('cart.emptyDesc')}
         </p>
         <Link
           to="/shop"
           className="inline-block px-8 py-3.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase hover:bg-roseGold transition-colors"
         >
-          Explore the Collection
+          {t('home.exploreLink')}
         </Link>
       </div>
     );
@@ -73,10 +75,10 @@ export const CartPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
         <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-roseGold">
-          Shopping Bag
+          {t('cart.eyebrow')}
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white mt-1">
-          Review Your Selection ({items.reduce((acc, i) => acc + i.quantity, 0)} items)
+          {t('cart.reviewSelection')} ({items.reduce((acc, i) => acc + i.quantity, 0)} {t('cart.itemsLabel')})
         </h1>
       </div>
 
@@ -90,11 +92,11 @@ export const CartPage: React.FC = () => {
                 <Sparkles className="w-4 h-4 text-roseGold" />
                 {amountToFreeShipping === 0 ? (
                   <strong className="text-emerald-600 dark:text-emerald-400">
-                    Complimentary Express Shipping Unlocked!
+                    {t('cart.unlockedShipping')}
                   </strong>
                 ) : (
                   <span>
-                    Add <strong>{formatPrice(amountToFreeShipping)}</strong> more to receive Free Shipping
+                    <strong>{formatPrice(amountToFreeShipping)}</strong> {t('cart.addMoreForFree')}
                   </span>
                 )}
               </span>
@@ -131,7 +133,7 @@ export const CartPage: React.FC = () => {
                       </p>
                     )}
                     <p className="text-xs font-semibold text-charcoal-600 dark:text-lumina-300 mt-1">
-                      {formatPrice(item.price)} each
+                      {formatPrice(item.price)} {t('cart.each')}
                     </p>
                   </div>
                 </div>
@@ -199,7 +201,7 @@ export const CartPage: React.FC = () => {
               to="/shop"
               className="text-xs text-charcoal-600 dark:text-lumina-300 hover:text-roseGold font-medium flex items-center gap-1.5"
             >
-              ← Continue Shopping
+              ← {t('cart.continue')}
             </Link>
           </div>
         </div>
@@ -208,7 +210,7 @@ export const CartPage: React.FC = () => {
         <div className="space-y-6">
           <div className="bg-white dark:bg-charcoal-800/80 rounded-3xl border border-lumina-200 dark:border-charcoal-700 p-6 sm:p-8 space-y-6 shadow-sm">
             <h3 className="font-serif text-lg font-semibold text-charcoal-900 dark:text-white border-b border-lumina-100 dark:border-charcoal-700 pb-4">
-              Order Summary
+              {t('cart.orderSummary')}
             </h3>
 
             {/* Promo Code Input */}
@@ -217,13 +219,13 @@ export const CartPage: React.FC = () => {
                 <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-xs">
                   <div className="flex items-center space-x-2 text-emerald-800 dark:text-emerald-300">
                     <Tag className="w-4 h-4" />
-                    <span>Coupon <strong>{couponCode}</strong> applied</span>
+                    <span><strong>{couponCode}</strong> {t('cart.couponApplied')}</span>
                   </div>
                   <button
                     onClick={() => dispatch(removeCoupon())}
                     className="text-emerald-600 hover:text-emerald-900 font-bold"
                   >
-                    Remove
+                    {t('cart.remove')}
                   </button>
                 </div>
               ) : (
@@ -232,7 +234,7 @@ export const CartPage: React.FC = () => {
                     type="text"
                     value={promoInput}
                     onChange={(e) => setPromoInput(e.target.value)}
-                    placeholder="Coupon (e.g. LUMINA15)"
+                    placeholder={t('cart.promoPlaceholder')}
                     className="flex-1 px-3 py-2 text-xs bg-lumina-50 dark:bg-charcoal-900 border border-lumina-200 dark:border-charcoal-700 text-charcoal-900 dark:text-white placeholder:text-charcoal-400 rounded-xl focus:outline-none focus:border-roseGold uppercase"
                   />
                   <button
@@ -240,7 +242,7 @@ export const CartPage: React.FC = () => {
                     disabled={couponLoading || !promoInput.trim()}
                     className="px-4 py-2 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 text-xs font-semibold rounded-xl hover:bg-roseGold transition-colors disabled:opacity-50"
                   >
-                    {couponLoading ? '...' : 'Apply'}
+                    {couponLoading ? '...' : t('cart.apply')}
                   </button>
                 </form>
               )}
@@ -252,29 +254,29 @@ export const CartPage: React.FC = () => {
             {/* Price Calculations */}
             <div className="space-y-3 text-xs text-charcoal-600 dark:text-lumina-300 border-t border-lumina-100 dark:border-charcoal-700 pt-4">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t('cart.subtotal')}</span>
                 <span className="font-semibold text-charcoal-900 dark:text-white">
                   {formatPrice(subTotal)}
                 </span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
-                  <span>Discount ({couponCode})</span>
+                  <span>{t('cart.discount')} ({couponCode})</span>
                   <span>-{formatPrice(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span>Shipping</span>
+                <span>{t('cart.shipping')}</span>
                 <span>
                   {shippingFee === 0 ? (
-                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">{t('cart.free')}</span>
                   ) : (
                     formatPrice(shippingFee)
                   )}
                 </span>
               </div>
               <div className="flex justify-between text-base font-bold text-charcoal-900 dark:text-white border-t border-lumina-200 dark:border-charcoal-700 pt-3">
-                <span>Estimated Total</span>
+                <span>{t('cart.estimatedTotal')}</span>
                 <span className="text-roseGold">{formatPrice(finalTotal)}</span>
               </div>
             </div>
@@ -283,13 +285,13 @@ export const CartPage: React.FC = () => {
               onClick={() => navigate('/checkout')}
               className="w-full py-4 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase flex items-center justify-center space-x-2 hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-all shadow-md group"
             >
-              <span>Proceed to Checkout</span>
+              <span>{t('cart.checkout')}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <div className="flex items-center justify-center space-x-2 text-[11px] text-charcoal-400">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>256-Bit Encrypted High-Security Checkout</span>
+              <span>{t('cart.secureBadge')}</span>
             </div>
           </div>
         </div>

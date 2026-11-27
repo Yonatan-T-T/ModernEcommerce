@@ -4,9 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { fetchCategories, fetchFeaturedProducts, fetchBestSellers } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
+import { useTranslation } from '@/i18n/translations';
 import { ArrowRight, Sparkles, Star } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: () => fetchCategories(),
@@ -39,18 +41,18 @@ export const HomePage: React.FC = () => {
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-roseGold/15 border border-roseGold/30 text-roseGold text-xs font-semibold tracking-widest uppercase animate-fade-in">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Haute Parfumerie & Botanical Alchemy</span>
+              <span>{t('home.heroBadge')}</span>
             </div>
 
             <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-charcoal-900 dark:text-white leading-[1.1]">
-              Pure Luxury. <br />
+              {t('home.heroTitle1')} <br />
               <span className="italic font-light bg-gradient-to-r from-roseGold via-lumina-600 to-roseGold-dark bg-clip-text text-transparent">
-                Ageless Radiance.
+                {t('home.heroTitle2')}
               </span>
             </h1>
 
             <p className="text-sm sm:text-base text-charcoal-600 dark:text-lumina-300 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
-              Formulated in Grasse and Paris with active bio-peptides, rare Bulgarian damask roses, and prismatic micronized pearls. Experience cosmetics elevated to high art.
+              {t('home.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
@@ -58,14 +60,14 @@ export const HomePage: React.FC = () => {
                 to="/shop"
                 className="w-full sm:w-auto px-8 py-3.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-full text-xs font-semibold tracking-widest uppercase hover:bg-roseGold dark:hover:bg-roseGold dark:hover:text-white transition-all shadow-luxury flex items-center justify-center space-x-2 group"
               >
-                <span>Explore Haute Collection</span>
+                <span>{t('home.exploreCollection')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/shop?isBestSeller=true"
                 className="w-full sm:w-auto px-8 py-3.5 border border-charcoal-300 dark:border-charcoal-700 text-charcoal-900 dark:text-white rounded-full text-xs font-semibold tracking-widest uppercase hover:bg-lumina-200/50 dark:hover:bg-charcoal-800 transition-colors flex items-center justify-center"
               >
-                View Bestsellers
+                {t('home.viewBestsellers')}
               </Link>
             </div>
 
@@ -73,15 +75,15 @@ export const HomePage: React.FC = () => {
             <div className="pt-8 grid grid-cols-3 gap-6 border-t border-lumina-200 dark:border-charcoal-800 max-w-md mx-auto lg:mx-0">
               <div>
                 <p className="font-serif text-2xl font-bold text-charcoal-900 dark:text-white">98%</p>
-                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">Natural Actives</p>
+                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">{t('home.statActives')}</p>
               </div>
               <div>
                 <p className="font-serif text-2xl font-bold text-charcoal-900 dark:text-white">16hr</p>
-                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">Radiant Wear</p>
+                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">{t('home.statWear')}</p>
               </div>
               <div>
                 <p className="font-serif text-2xl font-bold text-charcoal-900 dark:text-white">100%</p>
-                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">Cruelty-Free</p>
+                <p className="text-[11px] text-charcoal-500 dark:text-lumina-400">{t('home.statCruelty')}</p>
               </div>
             </div>
           </motion.div>
@@ -132,13 +134,13 @@ export const HomePage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-2 sm:space-y-3 mb-8 sm:mb-12">
           <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
-            Curated Formulations
+            {t('home.curated')}
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white">
-            Explore by Discipline
+            {t('home.exploreDiscipline')}
           </h2>
           <p className="text-xs sm:text-sm text-charcoal-500 dark:text-lumina-400 max-w-lg mx-auto">
-            Each category represents years of clinical formulation, pairing high-purity actives with sensory luxury.
+            {t('home.disciplineSubtitle')}
           </p>
         </div>
 
@@ -181,17 +183,17 @@ export const HomePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
-              Editor's Selection
+              {t('home.editorsSelection')}
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white mt-1">
-              Featured Formulations
+              {t('home.featuredTitle')}
             </h2>
           </div>
           <Link
             to="/shop?isFeatured=true"
             className="text-xs font-semibold tracking-wider uppercase text-charcoal-800 dark:text-lumina-200 hover:text-roseGold flex items-center gap-1 group"
           >
-            <span>View All Featured</span>
+            <span>{t('home.viewAllFeatured')}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
@@ -217,13 +219,13 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
               <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
-                The Science of Radiance
+                {t('home.scienceEyebrow')}
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-semibold text-charcoal-900 dark:text-white leading-tight">
-                The Lumina Four-Step Cellular Ritual
+                {t('home.ritualTitle')}
               </h2>
               <p className="text-sm text-charcoal-600 dark:text-lumina-300 leading-relaxed font-light">
-                Developed in collaboration with Parisian dermatologists, our signature daily protocol stimulates natural collagen synthesis, strengthens the lipid barrier, and seals in prismatic moisture.
+                {t('home.ritualSubtitle')}
               </p>
 
               <div className="space-y-4 pt-2">
@@ -232,8 +234,8 @@ export const HomePage: React.FC = () => {
                     1
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Active Cellular Cleansing</h4>
-                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">Gently dissolves pollutants while preserving vital epidermal lipids.</p>
+                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('home.step1Title')}</h4>
+                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('home.step1Desc')}</p>
                   </div>
                 </div>
 
@@ -242,8 +244,8 @@ export const HomePage: React.FC = () => {
                     2
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Peptide Infusion (Serum)</h4>
-                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">Micro-encapsulated peptides penetrate deep to firm, tone, and illuminate.</p>
+                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('home.step2Title')}</h4>
+                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('home.step2Desc')}</p>
                   </div>
                 </div>
 
@@ -252,8 +254,8 @@ export const HomePage: React.FC = () => {
                     3
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Ceramide Barrier Sealing</h4>
-                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">Organic Damask rose balms lock in active moisture for 24-hour dewiness.</p>
+                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('home.step3Title')}</h4>
+                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('home.step3Desc')}</p>
                   </div>
                 </div>
 
@@ -262,8 +264,8 @@ export const HomePage: React.FC = () => {
                     4
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Silk Prismatic Veil (Cosmetics)</h4>
-                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">Real silk proteins blur imperfections with a second-skin finish.</p>
+                    <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('home.step4Title')}</h4>
+                    <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('home.step4Desc')}</p>
                   </div>
                 </div>
               </div>
@@ -287,17 +289,17 @@ export const HomePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
-              Most Adored Formulations
+              {t('home.mostAdored')}
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white mt-1">
-              Iconic Bestsellers
+              {t('home.iconicBestsellers')}
             </h2>
           </div>
           <Link
             to="/shop?isBestSeller=true"
             className="text-xs font-semibold tracking-wider uppercase text-charcoal-800 dark:text-lumina-200 hover:text-roseGold flex items-center gap-1 group"
           >
-            <span>View All Bestsellers</span>
+            <span>{t('home.viewAllBestsellers')}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

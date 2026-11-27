@@ -3,7 +3,8 @@ import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-do
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { logout } from '@/store/slices/authSlice';
-import { toggleTheme } from '@/store/slices/themeAndConfigSlices';
+import { toggleTheme, toggleLanguage } from '@/store/slices/themeAndConfigSlices';
+import { useTranslation } from '@/i18n/translations';
 import {
   LayoutDashboard,
   Package,
@@ -20,6 +21,7 @@ import {
   Sun,
   Moon,
   ExternalLink,
+  Languages,
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -29,6 +31,7 @@ export const AdminLayout: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, language } = useTranslation();
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
@@ -71,23 +74,23 @@ export const AdminLayout: React.FC = () => {
     {
       title: 'Analytics & Overview',
       items: [
-        { to: '/admin', label: 'Dashboard & Profit', icon: LayoutDashboard, end: true },
+        { to: '/admin', label: t('admin.dashboard'), icon: LayoutDashboard, end: true },
       ],
     },
     {
       title: 'Catalog & Inventory',
       items: [
-        { to: '/admin/products', label: 'Products & Variants', icon: Package },
-        { to: '/admin/inventory', label: 'Inventory & Stock Logs', icon: Boxes },
-        { to: '/admin/categories-brands', label: 'Categories & Brands', icon: Tags },
+        { to: '/admin/products', label: t('admin.products'), icon: Package },
+        { to: '/admin/inventory', label: t('admin.inventory'), icon: Boxes },
+        { to: '/admin/categories-brands', label: t('admin.categoriesBrands'), icon: Tags },
       ],
     },
     {
       title: 'Orders & Customers',
       items: [
-        { to: '/admin/orders', label: 'Orders & Fulfillment', icon: ShoppingBag },
-        { to: '/admin/customers', label: 'Customer Directory', icon: Users },
-        { to: '/admin/coupons', label: 'Coupons & Discounts', icon: TicketPercent },
+        { to: '/admin/orders', label: t('admin.orders'), icon: ShoppingBag },
+        { to: '/admin/customers', label: t('admin.customers'), icon: Users },
+        { to: '/admin/coupons', label: t('admin.coupons'), icon: TicketPercent },
       ],
     },
   ];
@@ -210,6 +213,16 @@ export const AdminLayout: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
+            {/* Language Toggle */}
+            <button
+              onClick={() => dispatch(toggleLanguage())}
+              className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors flex items-center gap-1 text-xs font-bold"
+              title={language === 'en' ? 'Switch to Amharic' : 'Switch to English'}
+            >
+              <Languages className="w-3.5 h-3.5 text-roseGold" />
+              <span>{language === 'en' ? 'አማ' : 'EN'}</span>
+            </button>
+
             {/* Dark / Light Toggle */}
             <button
               onClick={() => dispatch(toggleTheme())}

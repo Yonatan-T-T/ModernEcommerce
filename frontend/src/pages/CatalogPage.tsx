@@ -3,10 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts, fetchCategories, fetchBrands } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
+import { useTranslation } from '@/i18n/translations';
 import { Filter, X, SlidersHorizontal, Search, RefreshCw, Check } from 'lucide-react';
 
 export const CatalogPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   // Parse filters from URL
   const search = searchParams.get('search') || '';
@@ -100,7 +102,7 @@ export const CatalogPage: React.FC = () => {
       {/* Categories */}
       <div>
         <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal-900 dark:text-white mb-3">
-          Category
+          {t('catalog.category')}
         </h4>
         <div className="space-y-1.5">
           <button
@@ -111,7 +113,7 @@ export const CatalogPage: React.FC = () => {
                 : 'text-charcoal-600 dark:text-lumina-300 hover:bg-lumina-100 dark:hover:bg-charcoal-800'
             }`}
           >
-            All Categories
+            {t('catalog.allCategories')}
           </button>
           {categories.map((c) => (
             <button
@@ -133,15 +135,15 @@ export const CatalogPage: React.FC = () => {
       {/* Skin Type */}
       <div>
         <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal-900 dark:text-white mb-3">
-          Skin Type
+          {t('catalog.skinType')}
         </h4>
         <div className="space-y-1.5">
           {[
-            { id: 0, name: 'All Skin Types' },
-            { id: 1, name: 'Dry Skin' },
-            { id: 2, name: 'Oily Skin' },
-            { id: 3, name: 'Combination Skin' },
-            { id: 4, name: 'Sensitive Skin' },
+            { id: 0, name: t('catalog.allSkinTypes') },
+            { id: 1, name: t('catalog.drySkin') },
+            { id: 2, name: t('catalog.oilySkin') },
+            { id: 3, name: t('catalog.comboSkin') },
+            { id: 4, name: t('catalog.sensitiveSkin') },
           ].map((st) => (
             <button
               key={st.id}
@@ -161,7 +163,7 @@ export const CatalogPage: React.FC = () => {
       {/* Brands */}
       <div>
         <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal-900 dark:text-white mb-3">
-          Brand / Atelier
+          {t('catalog.brand')}
         </h4>
         <div className="space-y-1.5">
           <button
@@ -172,7 +174,7 @@ export const CatalogPage: React.FC = () => {
                 : 'text-charcoal-600 dark:text-lumina-300 hover:bg-lumina-100 dark:hover:bg-charcoal-800'
             }`}
           >
-            All Brands
+            {t('catalog.allBrands')}
           </button>
           {brands.map((b) => (
             <button
@@ -231,13 +233,13 @@ export const CatalogPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-roseGold">
-              Haute Beauty Catalog
+              {t('catalog.eyebrow')}
             </span>
             <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white mt-1">
-              All Formulations
+              {t('catalog.title')}
             </h1>
             <p className="text-xs text-charcoal-500 dark:text-lumina-400 mt-1">
-              Showing {totalCount} active cellular treatments & cosmetic art
+              {totalCount}
             </p>
           </div>
 
@@ -250,7 +252,7 @@ export const CatalogPage: React.FC = () => {
                 type="text"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
-                placeholder="Search by name, active..."
+                placeholder={t('catalog.searchPlaceholder')}
                 className="w-full sm:w-64 pl-9 pr-3 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 text-charcoal-900 dark:text-white placeholder:text-charcoal-400 rounded-xl focus:outline-none focus:border-roseGold"
               />
             </div>
@@ -261,12 +263,12 @@ export const CatalogPage: React.FC = () => {
               onChange={(e) => updateFilter('sortBy', e.target.value)}
               className="px-3 py-2.5 text-xs bg-white dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 rounded-xl text-charcoal-700 dark:text-lumina-200 focus:outline-none focus:border-roseGold font-medium"
             >
-              <option value="">Sort: Featured</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-              <option value="newest">Newest Arrivals</option>
-              <option value="name_asc">A - Z</option>
+              <option value="">{t('catalog.sortFeatured')}</option>
+              <option value="price_asc">{t('catalog.sortPriceAsc')}</option>
+              <option value="price_desc">{t('catalog.sortPriceDesc')}</option>
+              <option value="rating">{t('catalog.sortRating')}</option>
+              <option value="newest">{t('catalog.sortNewest')}</option>
+              <option value="name_asc">{t('catalog.sortAlpha')}</option>
             </select>
 
             {/* Mobile Filter Toggle */}
@@ -275,7 +277,7 @@ export const CatalogPage: React.FC = () => {
               className="lg:hidden px-3 py-2.5 rounded-xl bg-lumina-100 dark:bg-charcoal-800 border border-lumina-200 dark:border-white/10 text-charcoal-700 dark:text-lumina-200 hover:text-roseGold flex items-center gap-1.5 text-xs font-semibold"
             >
               <SlidersHorizontal className="w-4 h-4" />
-              <span>Filters</span>
+              <span>{t('catalog.filters')}</span>
             </button>
           </div>
         </div>
@@ -290,7 +292,7 @@ export const CatalogPage: React.FC = () => {
                 : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
             }`}
           >
-            All Formulations
+            {t('catalog.title')}
           </button>
           {categories.map((c) => (
             <button
@@ -313,7 +315,7 @@ export const CatalogPage: React.FC = () => {
                 : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
             }`}
           >
-            Bestsellers
+            {t('nav.bestsellers')}
           </button>
           <button
             onClick={() => updateFilter('inStockOnly', !inStockOnly)}
@@ -323,7 +325,7 @@ export const CatalogPage: React.FC = () => {
                 : 'bg-white dark:bg-charcoal-800/80 text-charcoal-600 dark:text-lumina-300 border-lumina-200 dark:border-white/10 hover:border-roseGold'
             }`}
           >
-            In Stock
+            {t('catalog.inStock')}
           </button>
         </div>
       </div>

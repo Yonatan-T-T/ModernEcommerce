@@ -5,6 +5,7 @@ import { RootState } from '@/store/store';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toggleWishlist } from '@/store/slices/wishlistSlice';
 import { showToast } from '@/store/slices/toastSlice';
+import { useTranslation } from '@/i18n/translations';
 import { Product } from '@/types';
 import { formatPrice } from '@/utils/cn';
 import { Heart, Star, ShoppingBag, Check } from 'lucide-react';
@@ -16,6 +17,7 @@ interface ProductCardProps {
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
   const isWishlisted = wishlistIds.includes(product.id);
 
@@ -90,17 +92,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
         {product.isBestSeller && (
           <span className="px-2.5 py-0.5 bg-roseGold/95 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-xs">
-            Bestseller
+            {t('product.bestseller')}
           </span>
         )}
         {product.compareAtPrice && product.compareAtPrice > product.price && (
           <span className="px-2.5 py-0.5 bg-charcoal-900/90 dark:bg-lumina-100/95 text-white dark:text-charcoal-900 text-[10px] font-semibold uppercase tracking-wider rounded-full shadow-xs">
-            Save {Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
+            -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
           </span>
         )}
         {product.stockQuantity <= product.lowStockThreshold && product.stockQuantity > 0 && (
           <span className="px-2.5 py-0.5 bg-amber-500/95 text-white text-[10px] font-semibold tracking-wider rounded-full shadow-xs">
-            Low Stock
+            {t('product.lowStock')}
           </span>
         )}
       </div>
@@ -142,14 +144,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {justAdded ? (
               <>
                 <Check className="w-3.5 h-3.5" />
-                <span>Added</span>
+                <span>{t('product.added')}</span>
               </>
             ) : product.stockQuantity === 0 ? (
-              <span>Out of Stock</span>
+              <span>{t('product.outOfStock')}</span>
             ) : (
               <>
                 <ShoppingBag className="w-3.5 h-3.5" />
-                <span>Quick Add</span>
+                <span>{t('product.quickAdd')}</span>
               </>
             )}
           </button>

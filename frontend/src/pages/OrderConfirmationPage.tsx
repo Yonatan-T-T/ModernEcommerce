@@ -3,10 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { trackOrderByNumber } from '@/api/queries';
 import { formatPrice } from '@/utils/cn';
+import { useTranslation } from '@/i18n/translations';
 import { CheckCircle2, Package, Truck, Sparkles, ArrowRight } from 'lucide-react';
 
 export const OrderConfirmationPage: React.FC = () => {
   const { orderNumber } = useParams<{ orderNumber: string }>();
+  const { t } = useTranslation();
 
   const { data: order, isLoading } = useQuery({
     queryKey: ['order', orderNumber],
@@ -32,19 +34,19 @@ export const OrderConfirmationPage: React.FC = () => {
         </div>
 
         <span className="text-xs font-bold tracking-[0.25em] uppercase text-roseGold">
-          Order Confirmed
+          {t('confirm.badge')}
         </span>
 
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white">
-          Thank you for choosing Lumina
+          {t('confirm.title')}
         </h1>
 
         <p className="text-xs sm:text-sm text-charcoal-600 dark:text-lumina-300 max-w-md mx-auto">
-          We have received your ritual order. Your limited-batch formulations are being prepared in custom packaging.
+          {t('confirm.subtitle')}
         </p>
 
         <div className="inline-block px-4 py-2 bg-lumina-100 dark:bg-charcoal-800 rounded-xl border border-lumina-200 dark:border-charcoal-700 text-xs font-mono font-bold text-charcoal-900 dark:text-white">
-          Order Number: <span className="text-roseGold">{orderNumber}</span>
+          {t('confirm.orderNumber')}: <span className="text-roseGold">{orderNumber}</span>
         </div>
       </div>
 

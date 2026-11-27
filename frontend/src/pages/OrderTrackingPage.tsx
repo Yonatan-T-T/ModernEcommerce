@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { trackOrderByNumber } from '@/api/queries';
 import { formatPrice } from '@/utils/cn';
+import { useTranslation } from '@/i18n/translations';
 import {
   Package,
   Truck,
@@ -17,6 +18,7 @@ import {
 export const OrderTrackingPage: React.FC = () => {
   const { orderNumber: paramOrderNumber } = useParams<{ orderNumber: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [inputOrderNumber, setInputOrderNumber] = useState(paramOrderNumber || '');
   const [activeQueryNumber, setActiveQueryNumber] = useState(paramOrderNumber || '');
@@ -60,7 +62,7 @@ export const OrderTrackingPage: React.FC = () => {
           Concierge Delivery
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-charcoal-900 dark:text-white">
-          Track Your Beauty Ritual
+          {t('tracking.title')}
         </h1>
         <p className="text-xs text-charcoal-500 dark:text-lumina-400 max-w-sm mx-auto">
           Enter your unique order reference to check hand-packaging status and live courier transit.
@@ -83,7 +85,7 @@ export const OrderTrackingPage: React.FC = () => {
             type="submit"
             className="px-6 py-2.5 bg-charcoal-900 dark:bg-lumina-100 text-white dark:text-charcoal-900 rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-roseGold transition-colors"
           >
-            Track
+            {t('tracking.trackBtn')}
           </button>
         </form>
       </div>

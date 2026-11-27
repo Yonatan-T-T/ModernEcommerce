@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchMyOrders, fetchProducts } from '@/api/queries';
 import { ProductCard } from '@/components/common/ProductCard';
 import { updateUser, logout, openAuthModal } from '@/store/slices/authSlice';
+import { useTranslation } from '@/i18n/translations';
 import api from '@/api/client';
 import { formatPrice } from '@/utils/cn';
 import {
@@ -24,6 +25,7 @@ export const AccountPage: React.FC = () => {
   const activeTab = searchParams.get('tab') || 'orders';
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { productIds: wishlistIds } = useSelector((state: RootState) => state.wishlist);
@@ -149,7 +151,7 @@ export const AccountPage: React.FC = () => {
           }`}
         >
           <Package className="w-4 h-4" />
-          <span>Order History ({myOrders.length})</span>
+          <span>{t('account.orders')} ({myOrders.length})</span>
         </button>
 
         <button
@@ -161,7 +163,7 @@ export const AccountPage: React.FC = () => {
           }`}
         >
           <Heart className="w-4 h-4" />
-          <span>Curated Wishlist ({wishlistIds.length})</span>
+          <span>{t('account.wishlist')} ({wishlistIds.length})</span>
         </button>
 
         <button
@@ -173,7 +175,7 @@ export const AccountPage: React.FC = () => {
           }`}
         >
           <UserIcon className="w-4 h-4" />
-          <span>Profile Settings</span>
+          <span>{t('account.profile')}</span>
         </button>
       </div>
 

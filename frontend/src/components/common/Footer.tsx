@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { showToast } from '@/store/slices/toastSlice';
+import { useTranslation } from '@/i18n/translations';
 import { ShieldCheck, Truck, Sparkles, HeartHandshake, Instagram, Facebook, Twitter } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   const dispatch = useDispatch();
   const { config } = useSelector((state: RootState) => state.config);
+  const { t } = useTranslation();
   const [newsletterEmail, setNewsletterEmail] = useState('');
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -32,8 +34,8 @@ export const Footer: React.FC = () => {
               <Sparkles className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Active Molecular Purity</h4>
-              <p className="text-xs text-charcoal-500 dark:text-lumina-400">Clinical actives & rare botanical oils</p>
+              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('footer.pillar1Title')}</h4>
+              <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('footer.pillar1Desc')}</p>
             </div>
           </div>
 
@@ -42,8 +44,8 @@ export const Footer: React.FC = () => {
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Express Delivery</h4>
-              <p className="text-xs text-charcoal-500 dark:text-lumina-400">Complimentary over {config.currencySymbol}{config.freeShippingThreshold}</p>
+              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('footer.pillar2Title')}</h4>
+              <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('nav.freeShippingPromo')} {config.currencySymbol}{config.freeShippingThreshold}</p>
             </div>
           </div>
 
@@ -52,8 +54,8 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Dermatologist Tested</h4>
-              <p className="text-xs text-charcoal-500 dark:text-lumina-400">Hypoallergenic & non-comedogenic</p>
+              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('footer.pillar3Title')}</h4>
+              <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('footer.pillar3Desc')}</p>
             </div>
           </div>
 
@@ -62,8 +64,8 @@ export const Footer: React.FC = () => {
               <HeartHandshake className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">Ethical Luxury</h4>
-              <p className="text-xs text-charcoal-500 dark:text-lumina-400">100% Leaping Bunny certified cruelty-free</p>
+              <h4 className="text-sm font-semibold text-charcoal-900 dark:text-white">{t('footer.pillar4Title')}</h4>
+              <p className="text-xs text-charcoal-500 dark:text-lumina-400">{t('footer.pillar4Desc')}</p>
             </div>
           </div>
         </div>

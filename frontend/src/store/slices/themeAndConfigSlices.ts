@@ -57,8 +57,8 @@ const initialConfigState: ConfigState = {
   config: {
     storeName: 'Lumina Beauty',
     tagline: 'Pure Luxury. Ageless Radiance.',
-    currency: 'USD',
-    currencySymbol: '$',
+    currency: 'ETB',
+    currencySymbol: 'ETB ',
     freeShippingThreshold: 75,
     standardShippingFee: 7.99,
   },
@@ -74,5 +74,39 @@ export const configSlice = createSlice({
   },
 });
 
+export type LanguageCode = 'en' | 'am';
+
+interface LanguageState {
+  language: LanguageCode;
+}
+
+const getInitialLanguage = (): LanguageCode => {
+  try {
+    const saved = localStorage.getItem('lumina_lang');
+    if (saved === 'am' || saved === 'en') return saved;
+  } catch {}
+  return 'en';
+};
+
+export const languageSlice = createSlice({
+  name: 'language',
+  initialState: { language: getInitialLanguage() } as LanguageState,
+  reducers: {
+    toggleLanguage: (state) => {
+      state.language = state.language === 'en' ? 'am' : 'en';
+      try {
+        localStorage.setItem('lumina_lang', state.language);
+      } catch {}
+    },
+    setLanguage: (state, action: PayloadAction<LanguageCode>) => {
+      state.language = action.payload;
+      try {
+        localStorage.setItem('lumina_lang', state.language);
+      } catch {}
+    },
+  },
+});
+
 export const { toggleTheme, setTheme } = themeSlice.actions;
 export const { setConfig } = configSlice.actions;
+export const { toggleLanguage, setLanguage } = languageSlice.actions;
