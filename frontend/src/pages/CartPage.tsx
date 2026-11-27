@@ -21,11 +21,11 @@ export const CartPage: React.FC = () => {
   const [couponError, setCouponError] = useState<string | null>(null);
 
   const subTotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const freeShippingThreshold = config.freeShippingThreshold || 75;
+  const freeShippingThreshold = config.freeShippingThreshold || 10000;
   const progressToFreeShipping = Math.min(100, (subTotal / freeShippingThreshold) * 100);
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subTotal);
 
-  const shippingFee = subTotal >= freeShippingThreshold || items.length === 0 ? 0 : config.standardShippingFee || 7.99;
+  const shippingFee = subTotal > freeShippingThreshold || items.length === 0 ? 0 : config.standardShippingFee || 7.99;
   const finalTotal = Math.max(0, subTotal - discountAmount) + shippingFee;
 
   const handleApplyCoupon = async (e: React.FormEvent) => {

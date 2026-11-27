@@ -59,7 +59,7 @@ const initialConfigState: ConfigState = {
     tagline: 'Pure Luxury. Ageless Radiance.',
     currency: 'ETB',
     currencySymbol: 'ETB ',
-    freeShippingThreshold: 75,
+    freeShippingThreshold: 10000,
     standardShippingFee: 7.99,
   },
 };

@@ -140,7 +140,7 @@ public class OrderService : IOrderService
             }
         }
 
-        decimal shippingFee = subTotal >= 75m ? 0m : 7.99m; // Free shipping over $75
+        decimal shippingFee = subTotal > 10000m ? 0m : 7.99m; // Free shipping over 10,000 ETB
         decimal totalAmount = Math.Max(0, subTotal - discountAmount) + shippingFee;
         decimal netProfit = (subTotal - discountAmount) - totalCost;
 

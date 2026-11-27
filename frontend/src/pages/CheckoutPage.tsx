@@ -30,7 +30,7 @@ export const CheckoutPage: React.FC = () => {
   const { config } = useSelector((state: RootState) => state.config);
 
   const subTotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const shippingFee = subTotal >= (config.freeShippingThreshold || 75) ? 0 : config.standardShippingFee || 7.99;
+  const shippingFee = subTotal > (config.freeShippingThreshold || 10000) ? 0 : config.standardShippingFee || 7.99;
   const finalTotal = Math.max(0, subTotal - discountAmount) + shippingFee;
 
   // Form State

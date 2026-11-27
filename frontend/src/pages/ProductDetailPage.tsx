@@ -397,7 +397,7 @@ export const ProductDetailPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-lumina-200 dark:border-charcoal-800 text-xs text-charcoal-600 dark:text-lumina-300">
             <div className="flex items-center space-x-2">
               <Truck className="w-4 h-4 text-roseGold shrink-0" />
-              <span>Complimentary shipping over ETB 75</span>
+              <span>{t('product.freeShippingOver')}</span>
             </div>
             <div className="flex items-center space-x-2">
               <ShieldCheck className="w-4 h-4 text-roseGold shrink-0" />
