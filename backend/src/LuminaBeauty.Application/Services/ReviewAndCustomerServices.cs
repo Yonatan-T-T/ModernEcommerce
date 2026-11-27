@@ -191,6 +191,7 @@ public class CustomerService : ICustomerService
                     ImageUrl = primaryImage,
                     Price = c.ProductVariant?.Price ?? c.Product.Price,
                     CostPrice = c.ProductVariant?.CostPrice ?? c.Product.CostPrice,
+                    WeightGrams = c.ProductVariant?.WeightGrams ?? c.Product.WeightGrams,
                     Quantity = Math.Max(1, Math.Min(c.Quantity, Math.Max(1, maxStock))),
                     MaxStock = maxStock
                 };

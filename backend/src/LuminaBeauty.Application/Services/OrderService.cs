@@ -27,6 +27,18 @@ public class OrderService : IOrderService
         _context = context;
     }
 
+    public static decimal CalculateShippingFee(decimal subTotal, int totalItems, decimal totalWeightGrams, decimal freeShippingThreshold = 10000m)
+    {
+        if (totalItems <= 0 || subTotal > freeShippingThreshold)
+        {
+            return 0m;
+        }
+
+        decimal totalWeightKg = Math.Max(0m, totalWeightGrams) / 1000m;
+        decimal rawFee = 400m + Math.Max(0, totalItems - 1) * 40m + totalWeightKg * 120m;
+        return Math.Round(Math.Clamp(rawFee, 400m, 1000m), 0, MidpointRounding.AwayFromZero);
+    }
+
     public async Task<Result<OrderDto>> CreateOrderAsync(CreateOrderRequest request, int? userId = null)
     {
         if (request.Items == null || request.Items.Count == 0)
@@ -38,6 +50,8 @@ public class OrderService : IOrderService
         var orderItems = new List<OrderItem>();
         decimal subTotal = 0;
         decimal totalCost = 0;
+        int totalItems = 0;
+        decimal totalWeightGrams = 0m;
 
         foreach (var item in request.Items)
         {
@@ -94,6 +108,10 @@ public class OrderService : IOrderService
 
             subTotal += unitPrice * item.Quantity;
             totalCost += unitCost * item.Quantity;
+            decimal unitWeightGrams = variant?.WeightGrams ?? product.WeightGrams;
+            if (unitWeightGrams <= 0m) unitWeightGrams = 150m;
+            totalItems += item.Quantity;
+            totalWeightGrams += unitWeightGrams * item.Quantity;
 
             var primaryImg = product.Images.FirstOrDefault(i => i.IsPrimary)?.ImageUrl 
                              ?? product.Images.FirstOrDefault()?.ImageUrl;
@@ -140,7 +158,7 @@ public class OrderService : IOrderService
             }
         }
 
-        decimal shippingFee = subTotal > 10000m ? 0m : 7.99m; // Free shipping over 10,000 ETB
+        decimal shippingFee = CalculateShippingFee(subTotal, totalItems, totalWeightGrams);
         decimal totalAmount = Math.Max(0, subTotal - discountAmount) + shippingFee;
         decimal netProfit = (subTotal - discountAmount) - totalCost;
 

@@ -13,6 +13,7 @@ public class Product : BaseEntity
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public decimal? CompareAtPrice { get; set; }
+    public decimal WeightGrams { get; set; } = 150m;
 
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;

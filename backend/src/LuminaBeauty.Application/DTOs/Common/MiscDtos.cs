@@ -128,6 +128,7 @@ public class CartItemDto
     public string? ImageUrl { get; set; }
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
+    public decimal WeightGrams { get; set; } = 150m;
     public int Quantity { get; set; }
     public int MaxStock { get; set; }
 }

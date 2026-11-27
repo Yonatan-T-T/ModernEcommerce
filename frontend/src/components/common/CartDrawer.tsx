@@ -13,6 +13,7 @@ import {
 import { showToast } from '@/store/slices/toastSlice';
 import { useTranslation } from '@/i18n/translations';
 import { formatPrice } from '@/utils/cn';
+import { calculateShipping } from '@/utils/shipping';
 import { validateCoupon } from '@/api/queries';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Sparkles } from 'lucide-react';
 
@@ -35,7 +36,7 @@ export const CartDrawer: React.FC = () => {
   const progressToFreeShipping = Math.min(100, (subTotal / freeShippingThreshold) * 100);
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subTotal);
 
-  const shippingFee = subTotal > freeShippingThreshold || items.length === 0 ? 0 : config.standardShippingFee || 7.99;
+  const { shippingFee } = calculateShipping(items, subTotal, freeShippingThreshold);
   const finalTotal = Math.max(0, subTotal - discountAmount) + shippingFee;
 
   const handleApplyCoupon = async (e: React.FormEvent) => {

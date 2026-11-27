@@ -28,6 +28,9 @@ public static class DbInitializer
             );
         ");
 
+        await EnsureColumnExistsAsync(context, "Products", "WeightGrams", "TEXT NOT NULL DEFAULT '150'");
+        await EnsureColumnExistsAsync(context, "ProductVariants", "WeightGrams", "TEXT NULL");
+
         if (context.Users.Any())
         {
             // Repair any broken seeded Unsplash URLs in existing DBs
@@ -208,6 +211,7 @@ public static class DbInitializer
             Price = 98.00m,
             CostPrice = 22.50m,
             CompareAtPrice = 120.00m,
+            WeightGrams = 120m,
             CategoryId = catSkincare.Id,
             BrandId = brandLumina.Id,
             SkinType = SkinType.All,
@@ -228,8 +232,8 @@ public static class DbInitializer
             },
             Variants = new List<ProductVariant>
             {
-                new() { Sku = "LB-SKIN-001-30", VariantName = "30ml Travel Size", Size = "30ml", Price = 98.00m, CostPrice = 22.50m, StockQuantity = 25, IsActive = true },
-                new() { Sku = "LB-SKIN-001-50", VariantName = "50ml Full Size", Size = "50ml", Price = 145.00m, CostPrice = 32.00m, StockQuantity = 20, IsActive = true }
+                new() { Sku = "LB-SKIN-001-30", VariantName = "30ml Travel Size", Size = "30ml", Price = 98.00m, CostPrice = 22.50m, WeightGrams = 120m, StockQuantity = 25, IsActive = true },
+                new() { Sku = "LB-SKIN-001-50", VariantName = "50ml Full Size", Size = "50ml", Price = 145.00m, CostPrice = 32.00m, WeightGrams = 180m, StockQuantity = 20, IsActive = true }
             }
         };
 
@@ -243,6 +247,7 @@ public static class DbInitializer
             Price = 64.00m,
             CostPrice = 14.80m,
             CompareAtPrice = 75.00m,
+            WeightGrams = 180m,
             CategoryId = catMakeup.Id,
             BrandId = brandSoie.Id,
             SkinType = SkinType.Combination,
@@ -280,6 +285,7 @@ public static class DbInitializer
             Price = 115.00m,
             CostPrice = 28.00m,
             CompareAtPrice = 135.00m,
+            WeightGrams = 250m,
             CategoryId = catSkincare.Id,
             BrandId = brandAura.Id,
             SkinType = SkinType.Dry,
@@ -313,6 +319,7 @@ public static class DbInitializer
             Price = 165.00m,
             CostPrice = 36.00m,
             CompareAtPrice = 185.00m,
+            WeightGrams = 320m,
             CategoryId = catFragrance.Id,
             BrandId = brandLumina.Id,
             SkinType = SkinType.All,
@@ -332,8 +339,8 @@ public static class DbInitializer
             },
             Variants = new List<ProductVariant>
             {
-                new() { Sku = "LB-FRAG-004-50", VariantName = "50ml Glass Flacon", Size = "50ml", Price = 165.00m, CostPrice = 36.00m, StockQuantity = 11, IsActive = true },
-                new() { Sku = "LB-FRAG-004-100", VariantName = "100ml Grand Flacon", Size = "100ml", Price = 240.00m, CostPrice = 49.00m, StockQuantity = 8, IsActive = true }
+                new() { Sku = "LB-FRAG-004-50", VariantName = "50ml Glass Flacon", Size = "50ml", Price = 165.00m, CostPrice = 36.00m, WeightGrams = 320m, StockQuantity = 11, IsActive = true },
+                new() { Sku = "LB-FRAG-004-100", VariantName = "100ml Grand Flacon", Size = "100ml", Price = 240.00m, CostPrice = 49.00m, WeightGrams = 520m, StockQuantity = 8, IsActive = true }
             }
         };
 
@@ -347,6 +354,7 @@ public static class DbInitializer
             Price = 42.00m,
             CostPrice = 9.20m,
             CompareAtPrice = 48.00m,
+            WeightGrams = 85m,
             CategoryId = catMakeup.Id,
             BrandId = brandNoir.Id,
             SkinType = SkinType.All,
@@ -381,6 +389,7 @@ public static class DbInitializer
             Price = 72.00m,
             CostPrice = 16.50m,
             CompareAtPrice = 85.00m,
+            WeightGrams = 350m,
             CategoryId = catBodyHair.Id,
             BrandId = brandAura.Id,
             SkinType = SkinType.All,
@@ -615,5 +624,28 @@ public static class DbInitializer
         );
 
         await context.SaveChangesAsync();
+    }
+
+    private static async Task EnsureColumnExistsAsync(ApplicationDbContext context, string tableName, string columnName, string columnDefinition)
+    {
+        var connection = context.Database.GetDbConnection();
+        if (connection.State != System.Data.ConnectionState.Open)
+        {
+            await connection.OpenAsync();
+        }
+
+        using var command = connection.CreateCommand();
+        command.CommandText = $"PRAGMA table_info(\"{tableName}\");";
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            if (string.Equals(reader["name"]?.ToString(), columnName, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+        }
+
+        await reader.CloseAsync();
+        await context.Database.ExecuteSqlRawAsync($"ALTER TABLE \"{tableName}\" ADD COLUMN \"{columnName}\" {columnDefinition};");
     }
 }

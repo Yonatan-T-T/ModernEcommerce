@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { removeFromCart, updateQuantity, applyCoupon, removeCoupon } from '@/store/slices/cartSlice';
 import { formatPrice } from '@/utils/cn';
+import { calculateShipping } from '@/utils/shipping';
 import { validateCoupon } from '@/api/queries';
 import { useTranslation } from '@/i18n/translations';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, Sparkles, ShieldCheck } from 'lucide-react';
@@ -25,7 +26,7 @@ export const CartPage: React.FC = () => {
   const progressToFreeShipping = Math.min(100, (subTotal / freeShippingThreshold) * 100);
   const amountToFreeShipping = Math.max(0, freeShippingThreshold - subTotal);
 
-  const shippingFee = subTotal > freeShippingThreshold || items.length === 0 ? 0 : config.standardShippingFee || 7.99;
+  const { shippingFee } = calculateShipping(items, subTotal, freeShippingThreshold);
   const finalTotal = Math.max(0, subTotal - discountAmount) + shippingFee;
 
   const handleApplyCoupon = async (e: React.FormEvent) => {

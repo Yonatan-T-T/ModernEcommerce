@@ -39,6 +39,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.Property(e => e.Price).HasPrecision(18, 2);
             entity.Property(e => e.CostPrice).HasPrecision(18, 2);
             entity.Property(e => e.CompareAtPrice).HasPrecision(18, 2);
+            entity.Property(e => e.WeightGrams).HasPrecision(18, 2);
 
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Products)
@@ -57,6 +58,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Price).HasPrecision(18, 2);
             entity.Property(e => e.CostPrice).HasPrecision(18, 2);
+            entity.Property(e => e.WeightGrams).HasPrecision(18, 2);
 
             entity.HasOne(e => e.Product)
                 .WithMany(p => p.Variants)

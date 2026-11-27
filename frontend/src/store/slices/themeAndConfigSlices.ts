@@ -60,7 +60,7 @@ const initialConfigState: ConfigState = {
     currency: 'ETB',
     currencySymbol: 'ETB ',
     freeShippingThreshold: 10000,
-    standardShippingFee: 7.99,
+    standardShippingFee: 400,
   },
 };
 

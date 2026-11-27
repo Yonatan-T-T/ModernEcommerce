@@ -13,6 +13,7 @@ public class ProductVariant : BaseEntity
     public string? ShadeColorHex { get; set; } // e.g. "#F4D8C6"
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
+    public decimal? WeightGrams { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; } = true;
 }

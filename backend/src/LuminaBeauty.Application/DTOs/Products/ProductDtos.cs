@@ -13,6 +13,7 @@ public class ProductDto
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public decimal? CompareAtPrice { get; set; }
+    public decimal WeightGrams { get; set; } = 150m;
 
     public int CategoryId { get; set; }
     public string CategoryName { get; set; } = string.Empty;
@@ -59,6 +60,7 @@ public class ProductVariantDto
     public string? ShadeColorHex { get; set; }
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
+    public decimal? WeightGrams { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; }
 }
@@ -72,6 +74,7 @@ public class CreateProductRequest
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public decimal? CompareAtPrice { get; set; }
+    public decimal WeightGrams { get; set; } = 150m;
     public int CategoryId { get; set; }
     public int BrandId { get; set; }
     public SkinType SkinType { get; set; } = SkinType.All;
@@ -95,6 +98,7 @@ public class CreateVariantRequest
     public string? ShadeColorHex { get; set; }
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
+    public decimal? WeightGrams { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; } = true;
 }

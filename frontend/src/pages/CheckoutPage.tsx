@@ -5,6 +5,7 @@ import { RootState } from '@/store/store';
 import { clearCart } from '@/store/slices/cartSlice';
 import { createOrder } from '@/api/queries';
 import { formatPrice } from '@/utils/cn';
+import { calculateShipping } from '@/utils/shipping';
 import { useTranslation } from '@/i18n/translations';
 import {
   ShieldCheck,
@@ -30,7 +31,7 @@ export const CheckoutPage: React.FC = () => {
   const { config } = useSelector((state: RootState) => state.config);
 
   const subTotal = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const shippingFee = subTotal > (config.freeShippingThreshold || 10000) ? 0 : config.standardShippingFee || 7.99;
+  const { shippingFee } = calculateShipping(items, subTotal, config.freeShippingThreshold || 10000);
   const finalTotal = Math.max(0, subTotal - discountAmount) + shippingFee;
 
   // Form State

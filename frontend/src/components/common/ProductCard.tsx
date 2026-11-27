@@ -57,6 +57,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         imageUrl: primaryImage,
         price: selectedVariant?.price || product.price,
         costPrice: selectedVariant?.costPrice || product.costPrice,
+        weightGrams: selectedVariant?.weightGrams ?? product.weightGrams ?? 150,
         quantity: 1,
         maxStock: selectedVariant?.stockQuantity || product.stockQuantity,
       })

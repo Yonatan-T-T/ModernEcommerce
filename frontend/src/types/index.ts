@@ -19,6 +19,7 @@ export interface ProductVariant {
   shadeColorHex?: string;
   price: number;
   costPrice: number;
+  weightGrams?: number;
   stockQuantity: number;
   isActive: boolean;
 }
@@ -41,6 +42,7 @@ export interface Product {
   price: number;
   costPrice: number;
   compareAtPrice?: number;
+  weightGrams?: number;
   categoryId: number;
   categoryName: string;
   brandId: number;
@@ -91,6 +93,7 @@ export interface CartItem {
   imageUrl?: string;
   price: number;
   costPrice: number;
+  weightGrams?: number;
   quantity: number;
   maxStock: number;
 }

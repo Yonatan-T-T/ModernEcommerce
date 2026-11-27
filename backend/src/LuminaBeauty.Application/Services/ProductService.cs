@@ -197,6 +197,7 @@ public class ProductService : IProductService
             Price = request.Price,
             CostPrice = request.CostPrice,
             CompareAtPrice = request.CompareAtPrice,
+            WeightGrams = request.WeightGrams > 0 ? request.WeightGrams : 150m,
             CategoryId = request.CategoryId,
             BrandId = request.BrandId,
             SkinType = request.SkinType,
@@ -237,6 +238,7 @@ public class ProductService : IProductService
                     ShadeColorHex = v.ShadeColorHex,
                     Price = v.Price > 0 ? v.Price : request.Price,
                     CostPrice = v.CostPrice > 0 ? v.CostPrice : request.CostPrice,
+                    WeightGrams = v.WeightGrams,
                     StockQuantity = v.StockQuantity,
                     IsActive = v.IsActive
                 });
@@ -266,6 +268,7 @@ public class ProductService : IProductService
         product.Price = request.Price;
         product.CostPrice = request.CostPrice;
         product.CompareAtPrice = request.CompareAtPrice;
+        product.WeightGrams = request.WeightGrams > 0 ? request.WeightGrams : product.WeightGrams;
         product.CategoryId = request.CategoryId;
         product.BrandId = request.BrandId;
         product.SkinType = request.SkinType;
@@ -307,6 +310,7 @@ public class ProductService : IProductService
                     ShadeColorHex = v.ShadeColorHex,
                     Price = v.Price > 0 ? v.Price : request.Price,
                     CostPrice = v.CostPrice > 0 ? v.CostPrice : request.CostPrice,
+                    WeightGrams = v.WeightGrams,
                     StockQuantity = v.StockQuantity,
                     IsActive = v.IsActive
                 });
@@ -352,6 +356,7 @@ public class ProductService : IProductService
         Price = p.Price,
         CostPrice = p.CostPrice,
         CompareAtPrice = p.CompareAtPrice,
+        WeightGrams = p.WeightGrams,
         CategoryId = p.CategoryId,
         CategoryName = p.Category?.Name ?? string.Empty,
         BrandId = p.BrandId,
@@ -386,6 +391,7 @@ public class ProductService : IProductService
             ShadeColorHex = v.ShadeColorHex,
             Price = v.Price,
             CostPrice = v.CostPrice,
+            WeightGrams = v.WeightGrams,
             StockQuantity = v.StockQuantity,
             IsActive = v.IsActive
         }).ToList()

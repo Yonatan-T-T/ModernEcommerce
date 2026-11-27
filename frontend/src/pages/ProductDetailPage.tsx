@@ -142,6 +142,7 @@ export const ProductDetailPage: React.FC = () => {
         imageUrl: images[0]?.imageUrl,
         price: currentPrice,
         costPrice: currentCost,
+        weightGrams: selectedVariant?.weightGrams ?? product.weightGrams ?? 150,
         quantity,
         maxStock: currentStock,
       })

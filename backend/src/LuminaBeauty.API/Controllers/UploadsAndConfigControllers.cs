@@ -85,7 +85,7 @@ public class ConfigController : BaseApiController
             Currency = _config["StoreSettings:Currency"] ?? "ETB",
             CurrencySymbol = _config["StoreSettings:CurrencySymbol"] ?? "ETB ",
             FreeShippingThreshold = decimal.TryParse(_config["StoreSettings:FreeShippingThreshold"], out var threshold) ? threshold : 10000.00m,
-            StandardShippingFee = decimal.TryParse(_config["StoreSettings:StandardShippingFee"], out var fee) ? fee : 7.99m
+            StandardShippingFee = decimal.TryParse(_config["StoreSettings:StandardShippingFee"], out var fee) ? fee : 400.00m
         };
 
         return Ok(storeSettings);
