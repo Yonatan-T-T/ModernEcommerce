@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using LuminaBeauty.Application.DTOs.Auth;
 using LuminaBeauty.Application.Services;
 
@@ -14,6 +15,7 @@ public class AuthController : BaseApiController
         _authService = authService;
     }
 
+    [EnableRateLimiting("auth")]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
@@ -22,6 +24,7 @@ public class AuthController : BaseApiController
         return Ok(result);
     }
 
+    [EnableRateLimiting("auth")]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {

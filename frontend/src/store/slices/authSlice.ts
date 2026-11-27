@@ -14,10 +14,23 @@ interface AuthState {
 const savedUser = localStorage.getItem('lumina_user');
 const savedToken = localStorage.getItem('lumina_token');
 
+const parseSavedUser = (raw: string | null): User | null => {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as User;
+  } catch {
+    localStorage.removeItem('lumina_user');
+    localStorage.removeItem('lumina_token');
+    return null;
+  }
+};
+
+const parsedUser = parseSavedUser(savedUser);
+
 const initialState: AuthState = {
-  user: savedUser ? JSON.parse(savedUser) : null,
-  token: savedToken || null,
-  isAuthenticated: !!savedToken,
+  user: parsedUser,
+  token: parsedUser ? savedToken : null,
+  isAuthenticated: !!(parsedUser && savedToken),
   isAuthModalOpen: false,
   authModalTab: 'login',
 };

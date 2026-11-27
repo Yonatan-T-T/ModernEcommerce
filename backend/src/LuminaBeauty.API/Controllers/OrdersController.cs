@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using LuminaBeauty.Application.DTOs.Orders;
 using LuminaBeauty.Application.Services;
 using LuminaBeauty.Domain.Enums;
@@ -15,11 +16,18 @@ public class OrdersController : BaseApiController
         _orderService = orderService;
     }
 
+    [EnableRateLimiting("strict")]
     [HttpPost]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
         var result = await _orderService.CreateOrderAsync(request, CurrentUserId);
         if (!result.Succeeded) return BadRequest(result);
+
+        if (!IsAdmin && result.Data != null)
+        {
+            RedactAdminFinancials(result.Data);
+        }
+
         return Ok(result);
     }
 
@@ -29,14 +37,44 @@ public class OrdersController : BaseApiController
     {
         if (!CurrentUserId.HasValue) return Unauthorized();
         var orders = await _orderService.GetUserOrdersAsync(CurrentUserId.Value);
+
+        if (!IsAdmin)
+        {
+            foreach (var order in orders)
+            {
+                RedactAdminFinancials(order);
+            }
+        }
+
         return Ok(orders);
     }
 
+    [EnableRateLimiting("strict")]
     [HttpGet("tracking/{orderNumber}")]
     public async Task<IActionResult> TrackOrderByNumber(string orderNumber)
     {
         var result = await _orderService.GetOrderByNumberAsync(orderNumber);
         if (!result.Succeeded) return NotFound(result);
+
+        if (result.Data != null)
+        {
+            var isOwner = CurrentUserId.HasValue && result.Data.UserId == CurrentUserId.Value;
+
+            if (!IsAdmin)
+            {
+                RedactAdminFinancials(result.Data);
+            }
+
+            // Prevent PII leakage on anonymous/non-owner tracking lookups
+            if (!IsAdmin && !isOwner)
+            {
+                result.Data.CustomerEmail = string.Empty;
+                result.Data.CustomerPhone = string.Empty;
+                result.Data.ShippingAddressJson = string.Empty;
+                result.Data.Notes = null;
+            }
+        }
+
         return Ok(result);
     }
 
@@ -47,10 +85,14 @@ public class OrdersController : BaseApiController
         var result = await _orderService.GetOrderByIdAsync(id);
         if (!result.Succeeded) return NotFound(result);
 
-        // Security check: non-admin can only see their own order
         if (!IsAdmin && result.Data!.UserId != CurrentUserId)
         {
             return Forbid();
+        }
+
+        if (!IsAdmin && result.Data != null)
+        {
+            RedactAdminFinancials(result.Data);
         }
 
         return Ok(result);
@@ -71,5 +113,15 @@ public class OrdersController : BaseApiController
         var result = await _orderService.UpdateOrderStatusAsync(id, request);
         if (!result.Succeeded) return BadRequest(result);
         return Ok(result);
+    }
+
+    private static void RedactAdminFinancials(OrderDto order)
+    {
+        order.TotalCost = 0;
+        order.NetProfit = 0;
+        foreach (var item in order.Items)
+        {
+            item.UnitCost = 0;
+        }
     }
 }

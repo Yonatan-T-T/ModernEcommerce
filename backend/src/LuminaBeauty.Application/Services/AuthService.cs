@@ -33,6 +33,15 @@ public class AuthService : IAuthService
 
     public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.Email) || !request.Email.Contains('@'))
+            return Result<AuthResponse>.Failure("Please provide a valid email address.");
+
+        if (string.IsNullOrWhiteSpace(request.FullName) || request.FullName.Trim().Length < 2)
+            return Result<AuthResponse>.Failure("Full name must be at least 2 characters.");
+
+        if (!IsStrongPassword(request.Password))
+            return Result<AuthResponse>.Failure("Password must be at least 8 characters and include both letters and numbers.");
+
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
 
         if (await _context.Users.AnyAsync(u => u.Email.ToLower() == normalizedEmail))
@@ -99,7 +108,15 @@ public class AuthService : IAuthService
         user.FullName = request.FullName.Trim();
         user.PhoneNumber = request.PhoneNumber?.Trim();
         if (!string.IsNullOrEmpty(request.AvatarUrl))
-            user.AvatarUrl = request.AvatarUrl;
+        {
+            var avatar = request.AvatarUrl.Trim();
+            if (!avatar.StartsWith("https://", StringComparison.OrdinalIgnoreCase) &&
+                !avatar.StartsWith("/uploads/", StringComparison.OrdinalIgnoreCase))
+            {
+                return Result<UserDto>.Failure("Invalid avatar URL scheme.");
+            }
+            user.AvatarUrl = avatar;
+        }
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -115,11 +132,24 @@ public class AuthService : IAuthService
         if (!_passwordHasher.VerifyPassword(request.CurrentPassword, user.PasswordHash))
             return Result<bool>.Failure("Current password is incorrect.");
 
+        if (!IsStrongPassword(request.NewPassword))
+            return Result<bool>.Failure("New password must be at least 8 characters and include both letters and numbers.");
+
         user.PasswordHash = _passwordHasher.HashPassword(request.NewPassword);
         user.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         return Result<bool>.Success(true, "Password changed successfully");
+    }
+
+    private static bool IsStrongPassword(string? password)
+    {
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            return false;
+
+        bool hasLetter = password.Any(char.IsLetter);
+        bool hasDigit = password.Any(char.IsDigit);
+        return hasLetter && hasDigit;
     }
 
     private static UserDto MapToUserDto(User user) => new()

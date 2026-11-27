@@ -18,6 +18,10 @@ public class ProductsController : BaseApiController
     public async Task<IActionResult> GetProducts([FromQuery] ProductFilterParams filter)
     {
         var result = await _productService.GetProductsAsync(filter);
+        if (!IsAdmin)
+        {
+            foreach (var p in result.Items) RedactCostPrice(p);
+        }
         return Ok(result);
     }
 
@@ -26,6 +30,7 @@ public class ProductsController : BaseApiController
     {
         var result = await _productService.GetProductByIdAsync(id);
         if (!result.Succeeded) return NotFound(result);
+        if (!IsAdmin && result.Data != null) RedactCostPrice(result.Data);
         return Ok(result);
     }
 
@@ -34,6 +39,7 @@ public class ProductsController : BaseApiController
     {
         var result = await _productService.GetProductBySlugAsync(slug);
         if (!result.Succeeded) return NotFound(result);
+        if (!IsAdmin && result.Data != null) RedactCostPrice(result.Data);
         return Ok(result);
     }
 
@@ -41,6 +47,10 @@ public class ProductsController : BaseApiController
     public async Task<IActionResult> GetFeaturedProducts()
     {
         var products = await _productService.GetFeaturedProductsAsync();
+        if (!IsAdmin)
+        {
+            foreach (var p in products) RedactCostPrice(p);
+        }
         return Ok(products);
     }
 
@@ -48,7 +58,20 @@ public class ProductsController : BaseApiController
     public async Task<IActionResult> GetBestSellers()
     {
         var products = await _productService.GetBestSellersAsync();
+        if (!IsAdmin)
+        {
+            foreach (var p in products) RedactCostPrice(p);
+        }
         return Ok(products);
+    }
+
+    private static void RedactCostPrice(ProductDto product)
+    {
+        product.CostPrice = 0;
+        foreach (var v in product.Variants)
+        {
+            v.CostPrice = 0;
+        }
     }
 
     [Authorize(Roles = "Admin")]
